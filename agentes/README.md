@@ -10,12 +10,11 @@ Cada ficha define un subagente: qué hace, qué puede leer y qué no, qué entre
 | 04 | [Revisor de la especificación](04-revisor-de-la-especificacion.md) | 2 · Procesamiento | `herramientas/verificar.py --sellar` |
 | 05 | [Generador (A y B)](05-generador.md) | 2 · Procesamiento | `herramientas/verificar.py` |
 | 06 | [Reparador](06-reparador.md) | 2 · Procesamiento | `herramientas/verificar.py` |
-| 07 | [Proponente de hipótesis](07-proponente-de-hipotesis.md) | 3 · Análisis | `herramientas/verificar_hipotesis.py --sellar` |
-| 08 | [Probador de hipótesis](08-probador-de-hipotesis.md) | 3 · Análisis | `herramientas/verificar_hipotesis.py` |
+| 13 | [Documentador](13-documentador.md) | 3 · Análisis (lo hacen las personas; la IA solo documenta) | `herramientas/validar_whitepaper.py` (y `whitepaper_corrida.py` lo maqueta en tres hojas carta) |
 | 09 | [Graficador](09-graficador.md) | 4 · Visualización | `herramientas/verificar_grafico.py` |
 | 10 | [Custodio de datos personales](10-custodio-de-datos-personales.md) | 5 · Gobernanza | `herramientas/gobernanza.py` |
 | 11 | [Revisor ciego de seguridad](11-revisor-ciego-de-seguridad.md) | 5 · Gobernanza | `herramientas/baterias.py` |
-| 12 | [Presentador](12-presentador.md) | 4 · Visualización | `herramientas/verificar_presentacion.py` (calcula y escribe cada cifra) |
+| 12 | [Presentador](12-presentador.md) | 4 · Visualización (dice lo medido; el análisis lo hacen las personas) | `herramientas/verificar_presentacion.py` (calcula y escribe cada cifra; sin lenguaje de análisis) |
 
 Las [reglas comunes](00-reglas-comunes.md) aplican a todos.
 
@@ -32,10 +31,9 @@ La independencia es lo que evita que el que prueba comparta los puntos ciegos de
 | Revisor de la especificación | todo el criterio y los planes | implementaciones |
 | Generador A / B | spec, planes, capa limpia | reglas, caso conocido, sellos, la otra implementación |
 | Reparador | su falla, su sección del informe, spec | reglas, la otra implementación |
-| Proponente | spec, resultado aprobado | pruebas |
-| Probador | hipótesis (enunciado, umbral, línea base), CSV | razonamiento del proponente, resultado aprobado, implementaciones |
-| Graficador | resultado aprobado, procedencia | datos crudos |
-| Presentador | resultado aprobado, hipótesis probadas, gráfico aprobado, supuestos y preguntas, procedencia | datos crudos, capa limpia, código y bitácoras de los demás |
+| Documentador | spec, artefactos verificados (informe, procedencia, limpieza, gobernanza, verificación del gráfico), `grafico.json` | datos crudos, capa limpia, código de los demás, bitácoras |
+| Graficador | resultado aprobado, procedencia | datos crudos, capa limpia |
+| Presentador | resultado aprobado, gráfico aprobado, supuestos y preguntas, procedencia | datos crudos, capa limpia, código y bitácoras de los demás, hipótesis de la IA (historial) |
 | Custodio | metadatos de todas las columnas, conteos | filas y valores |
 | Revisor ciego de seguridad | el código generado | bitácora y notas de los autores |
 
@@ -46,8 +44,8 @@ Ingesta        lector ──► ingesta.py (5 pruebas de carga, procedencia)
                └─► custodio (en paralelo, solo metadatos)
 Procesamiento  especificador ──► limpiador ──► limpieza.py ──► revisor (sella) ──► generador A ∥ generador B
                ──► verificar.py ──► reparador (hasta 2 rondas)
-Análisis       proponente (sella) ──► probador ──► verificar_hipotesis.py
-Visualización  graficador ──► verificar_grafico.py            (en paralelo con el análisis)
-               presentador ──► verificar_presentacion.py      (cuando terminan el análisis y el gráfico)
+Análisis       lo hacen las personas · documentador (después del gráfico) ──► validar_whitepaper.py ──► whitepaper_corrida.py
+Visualización  graficador ──► verificar_grafico.py
+               presentador ──► verificar_presentacion.py      (cuando terminan el gráfico y el whitepaper)
 Gobernanza     revisor ciego de seguridad ──► gobernanza.py ──► baterias.py ──► informe_final.py
 ```

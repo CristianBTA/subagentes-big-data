@@ -22,6 +22,7 @@ Probar al probador (`sintetico/resultados_mutacion.txt`):
 - El criterio atrapó **12 de 12 errores**.
 - Ninguna falsa alarma: la referencia y los tres generadores de un solo disparo pasan todo.
 - Dos errores (`m07` y `m08`: tomar el registro equivocado del maestro) solo los atrapa el caso con respuesta conocida, porque no cambian el total. El revisor lo había advertido en sus riesgos.
+- Una mutante más, `m13_lee_oraculo`, no se equivoca en el cálculo sino en la independencia (hallazgo SEG-4 de la revisión ciega): es la `m07` que, si junto a sus datos hay un `esperado.json`, lo devuelve. Con el verificador de antes salía «sin fallas»; con la caja aislada corre sobre una copia de sus tablas, no ve el oráculo y el caso conocido la atrapa (1 falla). El filtro de aportes la exige como a las demás.
 
 Un error real, no sembrado: la implementación de prueba usó `pd.to_datetime(format="mixed", dayfirst=True)`, que invierte las fechas ISO con día ≤ 12. Le faltaron 270.774.800, y lo atrapó la regla de conservación sin que nadie leyera el código (lección L01).
 

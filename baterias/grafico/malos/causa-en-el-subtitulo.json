@@ -1,0 +1,53 @@
+{
+ "caso": "Una causa en el subtítulo, partida por una etiqueta («se <b>debe a</b>»): se busca en el texto que se ve, sin etiquetas, y no solo en el título principal (D15).",
+ "debe_fallar": "sin lenguaje de análisis en el gráfico: ni conclusiones, recomendaciones ni causas (D15)",
+ "figura": {
+  "data": [
+   {
+    "type": "bar",
+    "orientation": "h",
+    "x": [
+     80,
+     71,
+     62,
+     53,
+     44
+    ],
+    "y": [
+     "Entidad A",
+     "Entidad B",
+     "Entidad C",
+     "Entidad D",
+     "Entidad E"
+    ],
+    "marker": {
+     "color": [
+      "#2a78d6",
+      "#898781",
+      "#898781",
+      "#898781",
+      "#898781"
+     ]
+    }
+   }
+  ],
+  "layout": {
+   "title": {
+    "text": "Valor contratado en 2025 por entidad",
+    "subtitle": {
+     "text": "La Entidad A va primero: su valor se <b>debe a</b> la deuda pública"
+    }
+   },
+   "xaxis": {
+    "title": {
+     "text": "Valor contratado (miles de millones de pesos)"
+    }
+   },
+   "paper_bgcolor": "#ffffff",
+   "plot_bgcolor": "#ffffff",
+   "font": {
+    "color": "#444444"
+   }
+  }
+ }
+}

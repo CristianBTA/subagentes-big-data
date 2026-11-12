@@ -1,5 +1,6 @@
 name: validar-aporte
 # Filtro automático de aportes: sin IA y sin llaves. No le gasta nada a nadie.
+# El juez sale de la base: el aporte no puede cambiar el código que lo revisa, ni sus herramientas, ni sus dependencias.
 on:
   pull_request:
     branches: [main]
@@ -8,17 +9,28 @@ permissions:
   contents: read
 jobs:
   validar:
-    # macOS: la caja de arena usa sandbox-exec, que solo existe ahí; en Linux B11 y B12 ceden (lección L42)
+    # macOS: la caja de arena usa sandbox-exec, que solo existe ahí; en Linux B11 y B12 no aplican (lección L42)
     runs-on: macos-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, fijada al commit
+      - name: El aporte (commit de fusión), con la historia para compararlo con la base
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, fijada al commit
         with:
+          path: aporte
           fetch-depth: 0
+          persist-credentials: false
+      - name: La base, de donde salen el juez y sus herramientas (a mano, sin pull request, el mismo commit de main)
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, fijada al commit
+        with:
+          ref: ${{ github.event.pull_request.base.sha || github.sha }}
+          path: base
+          persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5, fijada al commit
         with:
           python-version: "3.13"
-      - name: Instalar solo lo de requirements.txt, verificando la huella de cada paquete
-        run: pip install --require-hashes -r requirements.txt
-      - name: Filtro automático (archivos prohibidos, datos personales, seguridad, que no rompa nada y huecos nuevos)
-        run: python herramientas/validar_aporte.py --base origin/${{ github.base_ref }}
+      - name: Instalar solo lo de requirements.txt de la base, verificando la huella de cada paquete
+        run: pip install --require-hashes -r base/requirements.txt
+      - name: Filtro automático (el juez de la base revisa el árbol del aporte)
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.sha }}
+        run: python base/herramientas/validar_aporte.py --arbol aporte --base "$BASE"

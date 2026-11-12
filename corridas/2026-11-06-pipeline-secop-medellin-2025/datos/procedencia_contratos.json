@@ -1,0 +1,80 @@
+{
+  "tabla": "contratos",
+  "archivo": "corridas/2026-11-06-pipeline-secop-medellin-2025/datos/contratos.csv",
+  "fuente": {
+    "tipo": "socrata",
+    "dominio": "www.datos.gov.co",
+    "conjunto": "jbjy-vk9h",
+    "titulo": "SECOP II - Contratos Electrónicos",
+    "filtro": "ciudad='Medellín' AND fecha_de_firma >= '2025-01-01T00:00:00' AND fecha_de_firma < '2026-01-01T00:00:00'",
+    "filtro_legible": "entidades con ciudad = Medellín y contratos con fecha_de_firma del 1 de enero al 31 de diciembre de 2025, los dos días completos (con hora)",
+    "licencia": "CC BY-SA 4.0",
+    "atribucion": "Agencia Nacional de Contratación Pública – Colombia Compra Eficiente",
+    "unidad": "contratos"
+  },
+  "origen": "https://www.datos.gov.co/resource/jbjy-vk9h.csv?%24select=id_contrato%2Cnit_entidad%2Ccodigo_entidad%2Cnombre_entidad%2Cfecha_de_firma%2Cvalor_del_contrato&%24where=ciudad%3D%27Medell%C3%ADn%27+AND+fecha_de_firma+%3E%3D+%272025-01-01T00%3A00%3A00%27+AND+fecha_de_firma+%3C+%272026-01-01T00%3A00%3A00%27",
+  "llave": "id_contrato",
+  "columnas": {
+    "id_contrato": "texto",
+    "nit_entidad": "texto",
+    "codigo_entidad": "texto",
+    "nombre_entidad": "texto",
+    "fecha_de_firma": "fecha",
+    "valor_del_contrato": "decimal"
+  },
+  "consultado": "2026-11-06T05:01:34",
+  "consultado_legible": "06-11-2026 05:01",
+  "filas": 49662,
+  "conteo_fuente": 49662,
+  "sha256": "aa99342d28e5cdbb63cb1fe35bc784fbeac6a798c3b875b8458081292a6cf8d2",
+  "sha256_anterior": null,
+  "sin_cambios": false,
+  "nulos": {},
+  "avisos": [
+    "valor_del_contrato: 26 valores fuera de [0, 100000000000] (se reportan, no se corrigen)"
+  ],
+  "nota": null,
+  "pruebas": [
+    {
+      "prueba": "conteo contra la fuente",
+      "ok": true,
+      "detalle": "filas leídas 49662 · conteo de la fuente 49662"
+    },
+    {
+      "prueba": "llave única",
+      "ok": true,
+      "detalle": "id_contrato: 0 repetidas"
+    },
+    {
+      "prueba": "llave sin nulos",
+      "ok": true,
+      "detalle": "id_contrato: 0 vacías"
+    },
+    {
+      "prueba": "tipos declarados (FAILFAST)",
+      "ok": true,
+      "detalle": "todos los valores tienen su tipo"
+    },
+    {
+      "prueba": "rangos",
+      "ok": true,
+      "detalle": "dentro de los rangos declarados"
+    },
+    {
+      "prueba": "dominios",
+      "ok": true,
+      "detalle": "dentro de los dominios declarados"
+    },
+    {
+      "prueba": "correr dos veces da lo mismo",
+      "ok": true,
+      "detalle": "la segunda lectura dio el mismo archivo, byte a byte"
+    }
+  ],
+  "cita": "SECOP II - Contratos Electrónicos, datos.gov.co (jbjy-vk9h), entidades con ciudad = Medellín y contratos con fecha_de_firma del 1 de enero al 31 de diciembre de 2025, los dos días completos (con hora), consultado el 06-11-2026. 49.662 contratos.",
+  "licencia": "CC BY-SA 4.0",
+  "atribucion": "Agencia Nacional de Contratación Pública – Colombia Compra Eficiente",
+  "columnas_personales_justificadas": {},
+  "estado": "aprobada",
+  "nota_de_publicacion": "Procedencia de una carga anterior al arreglo GOB-2 (6-nov-2026), publicada sin cambiar ninguna cifra ni huella; «archivo» quedó relativo al repositorio. Su «origen» no lleva $order ni $limit y no reproduce la descarga (la revisión del 6-nov-2026 lo pidió: 1.001 líneas, el encabezado y las 1.000 filas que la API da por defecto). La consulta que se ejecutó fue esa misma, ordenada por la llave ($order=id_contrato) y en páginas de 50.000 filas ($limit y $offset), según herramientas/ingesta.py de ese día. La versión de la fuente (rowsUpdatedAt) no se guardó."
+}

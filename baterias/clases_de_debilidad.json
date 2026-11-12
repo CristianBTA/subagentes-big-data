@@ -5,19 +5,19 @@
    "id": "reglas_sin_caja_ni_compuerta",
    "severidad": "alta",
    "archivo": "herramientas/verificar.py",
-   "control": "verificar.py: compuertas y caja de arena para reglas.py (B15, L15)"
+   "control": "verificar.py: compuertas y caja de arena para reglas.py (B15, B30, L15, L92)"
   },
   {
    "id": "csv_malformado_se_lee_en_silencio",
    "severidad": "media",
    "archivo": "impl_b.py",
-   "control": "robustez.py (archivos rotos) + limpieza FAILFAST"
+   "control": "robustez.py (archivos rotos) + limpieza FAILFAST (sus lectores, en la batería failfast: B33, L93)"
   },
   {
    "id": "texto_del_csv_en_mensajes_de_error",
    "severidad": "media",
    "archivo": "reglas.py",
-   "control": "verificar.py: mensajes saneados (L17)"
+   "control": "verificar.py: mensajes saneados (B26, L17, L83)"
   },
   {
    "id": "pyc_no_sellado_reemplaza_el_codigo",
@@ -48,7 +48,7 @@
    "id": "valor_no_finito_en_impl_b",
    "severidad": "baja",
    "archivo": "impl_b.py",
-   "control": "verificar.py: valores finitos + robustez.py (números venenosos)"
+   "control": "verificar.py: valores finitos (B31, L92) + robustez.py (números venenosos)"
   },
   {
    "id": "bidi_y_ancho_cero_en_el_grafico",
@@ -96,7 +96,7 @@
    "id": "csv_comilla_sin_cerrar",
    "severidad": "baja",
    "archivo": "impl_b.py",
-   "control": "robustez.py (comilla sin cerrar) + limpieza FAILFAST"
+   "control": "robustez.py (comilla sin cerrar) + limpieza FAILFAST (sus lectores, en la batería failfast: B33, L93)"
   },
   {
    "id": "pandas_indice_implicito",
@@ -108,7 +108,7 @@
    "id": "suma_desborda_float",
    "severidad": "baja",
    "archivo": "impl_b.py",
-   "control": "verificar.py: valores finitos + robustez.py (número enorme)"
+   "control": "verificar.py: valores finitos (B31, L92) + robustez.py (número enorme)"
   },
   {
    "id": "marcas_desde_encabezado",

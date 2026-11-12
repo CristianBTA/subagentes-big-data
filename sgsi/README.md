@@ -66,7 +66,7 @@ Lo que se cae se restablece; el orden:
 
 ## Retención
 
-Los datos crudos y la capa limpia de SECOP (`corridas/*/datos/`, `corridas/*/limpio/`, `ejemplo-secop/datos/`) se borran al cerrar la corrida. No se pierde nada: se reconstruyen con el contrato de datos, y la procedencia dice si la fuente cambió. Es una práctica escrita, no un borrado automático (riesgo R27).
+Los datos crudos y la capa limpia de SECOP (los CSV de `corridas/*/datos/`, `corridas/*/limpio/`, `ejemplo-secop/datos/`) se borran al cerrar la corrida. No se pierde nada: se reconstruyen con el contrato de datos, y la procedencia (`corridas/*/datos/procedencia_<tabla>.json`, que sí se publica: no trae filas) dice con qué consulta exacta, qué versión de la fuente y qué huella. Es una práctica escrita, no un borrado automático (riesgo R27).
 
 ## Lo que este SGSI no garantiza
 

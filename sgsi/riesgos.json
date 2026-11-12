@@ -6,7 +6,7 @@
   "origen": "el mismo criterio del ejemplo de la clase 4 del curso NODO (escala de 1 a 5, «10 o menos»)",
   "estado": "propuesto el 2026-11-06; el dueño lo confirma o lo cambia aquí"
  },
- "rutas_locales_aceptadas": 21,
+ "rutas_locales_aceptadas": 20,
  "riesgos": [
   {
    "id": "R01",
@@ -169,10 +169,10 @@
     "A15"
    ],
    "amenaza": "Archivos versionados guardan rutas absolutas del equipo del dueño",
-   "vulnerabilidad": "flujo.js y los JSON de algunas corridas escriben la ruta completa del clon",
+   "vulnerabilidad": "los JSON de algunas corridas guardan la ruta completa del clon donde se corrieron (flujo.js la recibe en raiz)",
    "probabilidad": {
     "valor": 5,
-    "por": "ya ocurrió: 21 líneas en 13 archivos (flujo.js, historial y JSON de las corridas)"
+    "por": "ya ocurrió: 20 líneas en 12 archivos (historial y JSON de las corridas; flujo.js ya no trae una ruta por omisión desde el 7-nov, L124)"
    },
    "controles": [
     "CT39"

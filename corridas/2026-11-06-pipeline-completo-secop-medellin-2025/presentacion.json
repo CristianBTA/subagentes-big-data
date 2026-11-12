@@ -1,53 +1,136 @@
 {
-  "respuesta": {
-    "titulo": "Las {n_entidades} entidades con sede en Medellín contrataron {total} en 2025",
-    "decision": "Decidir si el valor contratado se publica tal cual o después de cotejar en SECOP II los contratos atípicos más grandes."
+  "lo_preguntado_y_lo_medido": {
+    "situacion": "SECOP II registra los contratos firmados en 2025 por entidades con ciudad Medellín.",
+    "pregunta": "¿Cuánto contrató en 2025 cada entidad pública con sede en Medellín?",
+    "titulo": "Las {n_entidades} entidades con sede en Medellín contrataron {total} de pesos en 2025"
   },
-  "scqa": {
-    "situacion": "SECOP II registra los contratos firmados en 2025 por entidades con sede en Medellín: {n_contratos} contratos de {n_entidades} entidades.",
-    "complicacion": "Pocos contratos de valor atípico concentran gran parte del dinero, y los datos mezclan decisiones de negocio todavía abiertas.",
-    "pregunta": "¿Cuánto contrató cada entidad en 2025 y qué tan firme es ese orden?",
-    "respuesta": "Las entidades suman {total} en pesos y las {quince} de mayor valor reúnen el {top15} de ese total; el orden depende de pocos contratos grandes."
-  },
-  "hallazgos": [
+  "mediciones": [
     {
       "titulo": "Las {quince} entidades de mayor valor suman el {top15} de lo contratado en 2025",
-      "evidencia": {"tipo": "grafico"},
-      "nota": "El resto de entidades queda agrupado en una sola barra."
+      "evidencia": {
+        "tipo": "grafico"
+      },
+      "nota": "Barras de mayor a menor, con las demás entidades agrupadas en la barra final."
     },
     {
-      "titulo": "Los contratos atípicos por arriba aportan el {h1_pct} del valor contratado en 2025",
-      "evidencia": {"tipo": "hipotesis", "id": "H1"},
-      "nota": "La proporción se mide sobre el valor de los contratos, no sobre el número de entidades."
+      "titulo": "Las {cinco} entidades de mayor valor contrataron {top5} de pesos en 2025",
+      "evidencia": {
+        "tipo": "tabla",
+        "columnas": [
+          "entidad",
+          "valor_contratado",
+          "numero_contratos"
+        ],
+        "orden": "valor_contratado",
+        "filas": 5
+      },
+      "nota": "Valor contratado y número de contratos de cada una, ordenados por valor."
     },
     {
-      "titulo": "Sin los contratos de valor extremo, el Distrito sigue primero con {h2_razon} veces la suma de la segunda entidad",
-      "evidencia": {"tipo": "hipotesis", "id": "H2"},
-      "nota": "El primer lugar del Distrito resiste esa exclusión."
+      "titulo": "Las {n_entidades} entidades firmaron {contratos} contratos en 2025",
+      "evidencia": {
+        "tipo": "cifra",
+        "cifra": "contratos"
+      },
+      "nota": "Suma del número de contratos de todas las entidades del resultado."
     }
   ],
   "metodo_y_limites": {
-    "metodo": "Se sumó el valor de los contratos firmados en 2025 por cada NIT de entidad con ciudad Medellín en SECOP II, y se probaron hipótesis sobre la concentración con código aparte.",
-    "incertidumbre": "No aplica intervalo: es un censo de los contratos publicados en la fuente, no una muestra. La incertidumbre viene de los contratos atípicos y de las preguntas abiertas.",
+    "metodo": "Por cada NIT de entidad se sumó el valor de los contratos firmados en 2025, con los dos días extremos completos, y se contaron esos contratos. Cada cifra la calculó el código desde el resultado aprobado.",
+    "incertidumbre": "No aplica: es un recuento de los registros de SECOP II y no una estimación a partir de una muestra.",
     "limites": [
-      "P1: no se definió si entidad es el NIT o cada unidad que contrata; se usó el NIT.",
-      "P2: no se definió si se excluyen entidades no públicas; se incluyeron todas las del archivo.",
-      "P3: no se definió si las operaciones de crédito público cuentan como valor contratado; se contaron."
+      "P1: queda abierto si «entidad» es el NIT o cada unidad que contrata; aquí se tomó el NIT.",
+      "P2: el archivo puede incluir entidades que no son públicas; aquí se incluyeron todas las que trae.",
+      "P3: las operaciones de crédito público cuentan como valor contratado, pues el archivo no permite separarlas.",
+      "El supuesto S8 toma como sede la ciudad registrada en SECOP II, incluidas regionales y seccionales de entidades nacionales."
     ]
   },
-  "recomendacion": {
-    "que": "Cotejar en SECOP II los contratos atípicos de mayor valor antes de publicar el ranking.",
-    "quien": "El equipo de datos junto con quien responde por la pregunta de negocio.",
-    "proximo_paso": "Responder P1, P2 y P3 y revisar uno por uno los contratos de valor extremo.",
-    "como_se_mide": "Se mide con el valor total recalculado y la entidad en primer lugar tras cada respuesta."
-  },
+  "preguntas_para_las_personas": [
+    {
+      "tipo": "costo",
+      "pregunta": "¿En qué tipos de contrato se concentra el valor contratado por las entidades de mayor valor?"
+    },
+    {
+      "tipo": "calidad",
+      "pregunta": "¿Qué tan completos y confiables son los valores registrados en SECOP II para los contratos de mayor valor?"
+    },
+    {
+      "tipo": "impacto",
+      "pregunta": "¿A qué población de Medellín llegan los contratos de las entidades de mayor valor y qué cambia para ella?"
+    }
+  ],
   "cifras": [
-    {"id": "n_entidades", "calculo": {"op": "conteo"}},
-    {"id": "total", "calculo": {"op": "suma", "columna": "valor_contratado"}, "formato": {"escala": "billones", "decimales": 1}},
-    {"id": "n_contratos", "calculo": {"op": "suma", "columna": "numero_contratos"}},
-    {"id": "quince", "calculo": {"op": "conteo", "primeros": 15}},
-    {"id": "top15", "calculo": {"op": "porcentaje", "parte": {"op": "suma_primeros", "columna": "valor_contratado", "n": 15}, "total": {"op": "suma", "columna": "valor_contratado"}}, "formato": {"decimales": 1}},
-    {"id": "h1_pct", "calculo": {"op": "hipotesis", "id": "H1", "campo": "valor", "como": "porcentaje"}, "formato": {"decimales": 1}},
-    {"id": "h2_razon", "calculo": {"op": "hipotesis", "id": "H2", "campo": "valor"}, "formato": {"decimales": 1}}
+    {
+      "id": "total",
+      "calculo": {
+        "op": "suma",
+        "columna": "valor_contratado"
+      },
+      "formato": {
+        "escala": "billones",
+        "decimales": 1
+      }
+    },
+    {
+      "id": "n_entidades",
+      "calculo": {
+        "op": "conteo"
+      }
+    },
+    {
+      "id": "quince",
+      "calculo": {
+        "op": "conteo",
+        "primeros": 15
+      }
+    },
+    {
+      "id": "cinco",
+      "calculo": {
+        "op": "conteo",
+        "primeros": 5
+      }
+    },
+    {
+      "id": "top15",
+      "calculo": {
+        "op": "porcentaje",
+        "parte": {
+          "op": "suma_primeros",
+          "columna": "valor_contratado",
+          "n": 15
+        },
+        "total": {
+          "op": "suma",
+          "columna": "valor_contratado"
+        }
+      },
+      "formato": {
+        "decimales": 1
+      }
+    },
+    {
+      "id": "top5",
+      "calculo": {
+        "op": "suma_primeros",
+        "columna": "valor_contratado",
+        "n": 5
+      },
+      "formato": {
+        "escala": "billones",
+        "decimales": 1
+      }
+    },
+    {
+      "id": "contratos",
+      "calculo": {
+        "op": "suma",
+        "columna": "numero_contratos"
+      },
+      "formato": {
+        "escala": null,
+        "decimales": 0
+      }
+    }
   ]
 }

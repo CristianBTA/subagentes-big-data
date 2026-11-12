@@ -12,24 +12,19 @@
       "detalle": "informe.json: estado «aprobado», 53 filas"
     },
     {
-      "comprobacion": "la respuesta va primero y dice qué se pide decidir",
+      "comprobacion": "lo preguntado y lo medido van primero (situación, pregunta y medición principal)",
       "ok": true,
       "detalle": "presentes"
     },
     {
-      "comprobacion": "contexto SCQA completo (situación, complicación, pregunta, respuesta)",
-      "ok": true,
-      "detalle": "completo"
-    },
-    {
       "comprobacion": "cada cifra se calcula desde los datos aprobados",
       "ok": true,
-      "detalle": "7 de 7 cifras calculadas: n_entidades = 53, total = 17,2 billones, n_contratos = 49.662, quince = 15, top15 = 97,6 %, h1_pct = 82,4 %, h2_razon = 1,5"
+      "detalle": "7 de 7 cifras calculadas: total = 17,2 billones, n_entidades = 53, quince = 15, cinco = 5, top15 = 97,6 %, top5 = 15,2 billones, contratos = 49.662"
     },
     {
-      "comprobacion": "de 1 a 5 hallazgos, cada uno con una sola evidencia válida",
+      "comprobacion": "de 1 a 5 mediciones, cada una con una sola evidencia válida",
       "ok": true,
-      "detalle": "3 hallazgos"
+      "detalle": "3 mediciones"
     },
     {
       "comprobacion": "los números los escribe el código (marcadores {id}, ningún número a mano)",
@@ -37,19 +32,24 @@
       "detalle": "todos los números salen de cifras declaradas"
     },
     {
-      "comprobacion": "títulos que afirman: oración con una cifra, de 6 a 22 palabras y hasta 120 caracteres",
+      "comprobacion": "títulos que dicen lo medido: oración con una cifra, de 6 a 22 palabras y hasta 120 caracteres",
       "ok": true,
-      "detalle": "todos afirman con cifra"
+      "detalle": "todos dicen lo medido con su cifra"
     },
     {
       "comprobacion": "método, incertidumbre y límites declarados; preguntas abiertas nombradas",
       "ok": true,
-      "detalle": "3 límites"
+      "detalle": "4 límites"
     },
     {
-      "comprobacion": "recomendación con qué, quién, próximo paso y cómo se mide",
+      "comprobacion": "preguntas para las personas: de 3 a 6, entre «¿» y «?», de costo, calidad e impacto",
       "ok": true,
-      "detalle": "completa"
+      "detalle": "3 preguntas, de costo, calidad e impacto; las responden las personas en ../../plantillas/analisis_humano.md"
+    },
+    {
+      "comprobacion": "sin lenguaje de análisis: ni conclusiones, recomendaciones, causas, juicios ni decisiones (D15)",
+      "ok": true,
+      "detalle": "dice lo preguntado y lo medido; el análisis queda para las personas"
     },
     {
       "comprobacion": "fuente y fecha de consulta tomadas de la procedencia",
@@ -73,10 +73,25 @@
     }
   ],
   "titulos_en_orden": [
-    "Las 53 entidades con sede en Medellín contrataron 17,2 billones en 2025",
+    "Las 53 entidades con sede en Medellín contrataron 17,2 billones de pesos en 2025",
     "Las 15 entidades de mayor valor suman el 97,6 % de lo contratado en 2025",
-    "Los contratos atípicos por arriba aportan el 82,4 % del valor contratado en 2025",
-    "Sin los contratos de valor extremo, el Distrito sigue primero con 1,5 veces la suma de la segunda entidad"
+    "Las 5 entidades de mayor valor contrataron 15,2 billones de pesos en 2025",
+    "Las 53 entidades firmaron 49.662 contratos en 2025"
   ],
+  "preguntas_para_las_personas": [
+    {
+      "tipo": "costo",
+      "pregunta": "¿En qué tipos de contrato se concentra el valor contratado por las entidades de mayor valor?"
+    },
+    {
+      "tipo": "calidad",
+      "pregunta": "¿Qué tan completos y confiables son los valores registrados en SECOP II para los contratos de mayor valor?"
+    },
+    {
+      "tipo": "impacto",
+      "pregunta": "¿A qué población de Medellín llegan los contratos de las entidades de mayor valor y qué cambia para ella?"
+    }
+  ],
+  "plantilla_de_las_personas": "../../plantillas/analisis_humano.md",
   "html": "presentacion.html"
 }

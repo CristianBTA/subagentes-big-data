@@ -218,7 +218,8 @@ def pruebas_existentes():
     return blind, bat
 
 
-PRUEBAS_FIJAS = {"corrida-sintetica", "mutantes", "autoprueba:validar_ficha", "red:abierta_a_aportes", "red:vulnerabilidades"}
+PRUEBAS_FIJAS = {"corrida-sintetica", "mutantes", "autoprueba:validar_ficha", "autoprueba:auditar_independencia",
+                 "red:abierta_a_aportes", "red:vulnerabilidades"}
 
 
 def comprobar_controles(controles, res, chequeos_propios):
@@ -490,6 +491,8 @@ def medir_efectividad(controles, en_linea, res):
         shutil.rmtree(tmp.parent, ignore_errors=True)
     rc, _ = correr("herramientas/validar_ficha.py", "--autoprueba")
     resultados["autoprueba:validar_ficha"] = "pasa" if rc == 0 else "falla"
+    rc, _ = correr("evidencia/blindaje/auditar_independencia.py", "--autoprueba")
+    resultados["autoprueba:auditar_independencia"] = "pasa" if rc == 0 else "falla"
     if en_linea:
         for prueba, script in (("red:abierta_a_aportes", "abierta_a_aportes.py"), ("red:vulnerabilidades", "vulnerabilidades.py")):
             rc, out = correr(f"herramientas/{script}")

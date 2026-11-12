@@ -10,7 +10,7 @@ Dos generadores **independientes** escriben el análisis con herramientas distin
 - `reglas.py`, `caso_conocido/`, `sellos.json`, los informes y la implementación del otro generador. La verificación tiene que ser independiente de su código.
 
 ## Entrega
-- `impl_a.py` o `impl_b.py`, con `analizar(datos) -> list[dict]` (una fila por grupo con las columnas de la salida) y `conciliar(datos)` (filas leídas, usadas, excluidas por motivo y marcadas).
+- `impl_a.py` o `impl_b.py`, con `analizar(datos) -> list[dict]` (una fila por grupo con las columnas de la salida) y `conciliar(datos)` (filas leídas, usadas, excluidas por motivo y marcadas). Cada conteo es un entero (`len(...)`, `int(...)`): un decimal, un texto, un booleano o un infinito hacen fallar la conciliación.
 
 ## Reglas
 - Seguir la spec al pie de la letra; si algo parece contradictorio, seguirla igual y anotarlo.

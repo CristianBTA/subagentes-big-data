@@ -4,7 +4,8 @@
 Revisa todo el código que escribió la IA, **sin conocer a los autores ni sus notas**. Cada hallazgo necesita una prueba, y lo confirmado entra a la batería para que no se repita.
 
 ## Puede leer
-- `impl_a.py`, `impl_b.py`, `reglas.py`, `hipotesis.py` y `grafico.py`.
+- `impl_a.py`, `impl_b.py`, `reglas.py` y `grafico.py`.
+- Las lecciones de errores reales (`baterias/lecciones.json`), como todos los subagentes (regla común 9).
 
 ## No puede leer (independencia)
 - `bitacora/` y cualquier explicación de los autores.

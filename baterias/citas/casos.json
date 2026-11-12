@@ -1,0 +1,32 @@
+{
+  "_nota": "Probar al probador de las lecciones (L96): cada cita buena tiene que pasar y cada cita mala tiene que fallar justo por lo que ataca (debe_fallar), ni por otra cosa ni por nada. Los tipos: blindaje (un id que no está en herramientas/blindaje.py), mutante (uno que no está en herramientas/mutar_controles.py), archivo (una ruta o un caso de batería que no existe, que sale del repositorio o que no está versionado), autoprueba (una herramienta sin --autoprueba), cita (un texto entre « » que no está en el archivo que lo precede) y vaga (texto libre sin nada que se pueda comprobar).",
+  "buenas": [
+    {"nombre": "blindaje", "prueba": "herramientas/blindaje.py --solo B00,B33"},
+    {"nombre": "mutante_de_los_controles", "prueba": "herramientas/mutar_controles.py --solo M12"},
+    {"nombre": "caso_de_bateria", "prueba": "bateria:failfast/campo_de_mas.csv bateria:failfast/se_leen/codigos_con_forma_de_monto.csv"},
+    {"nombre": "carpeta_de_bateria", "prueba": "herramientas/seguridad_cwe.py bateria:seguridad/malos_usuario"},
+    {"nombre": "archivo_versionado", "prueba": "regla común 5 (FAILFAST) en agentes/00-reglas-comunes.md"},
+    {"nombre": "herramienta_por_su_nombre", "prueba": "perfilar.py marca las fechas con hora"},
+    {"nombre": "autoprueba_con_su_caso", "prueba": "validar_ficha.py --autoprueba: caso «norma con el año cambiado (Ley 1581 de 2013)»"},
+    {"nombre": "cita_en_un_json", "prueba": "corridas/2026-11-06-secop-medellin-2025/spec.json, pregunta P2 «¿Se excluye la Universidad Pontificia Bolivariana»"},
+    {"nombre": "mutante_de_una_corrida", "prueba": "herramientas/verificar.py corridas/2026-11-06-ventas-semestre --impl m06_fechas_iso_invertidas=evidencia/sintetico/mutantes/m06_fechas_iso_invertidas.py (R1 y el caso conocido)"},
+    {"nombre": "texto_que_no_es_ruta", "prueba": "herramientas/verificar_grafico.py (período incompleto con \\b, fechas dd/mm/aaaa y 1/2 de las barras)"}
+  ],
+  "malas": [
+    {"nombre": "blindaje_que_no_existe", "prueba": "herramientas/blindaje.py --solo B99", "debe_fallar": ["blindaje"]},
+    {"nombre": "blindaje_retirado", "prueba": "herramientas/blindaje.py B06", "debe_fallar": ["blindaje"]},
+    {"nombre": "mutante_que_no_existe", "prueba": "herramientas/mutar_controles.py --solo M12,M99", "debe_fallar": ["mutante"]},
+    {"nombre": "herramienta_que_no_existe", "prueba": "herramientas/no_existe.py", "debe_fallar": ["archivo"]},
+    {"nombre": "caso_de_bateria_que_no_existe", "prueba": "bateria:failfast/no_existe.csv", "debe_fallar": ["archivo"]},
+    {"nombre": "carpeta_que_no_existe", "prueba": "revisor de la especificación (agentes/04) y reglas sobre el dato crudo", "debe_fallar": ["archivo"]},
+    {"nombre": "nombre_suelto_de_otra_carpeta", "prueba": "bateria:seguridad/malos/paquete_inventado.py y instala_desde_codigo.py", "debe_fallar": ["archivo"]},
+    {"nombre": "dato_ignorado_que_no_viaja", "prueba": "ejemplo-secop/datos/contratos.csv", "debe_fallar": ["archivo"]},
+    {"nombre": "ruta_que_sale_del_repositorio", "prueba": "herramientas/../../../../../../../../etc/hosts", "debe_fallar": ["archivo"]},
+    {"nombre": "herramienta_sin_autoprueba", "prueba": "herramientas/reglas_base.py --autoprueba", "debe_fallar": ["autoprueba"]},
+    {"nombre": "caso_que_no_esta_en_la_autoprueba", "prueba": "validar_ficha.py --autoprueba: caso «norma inventada que nadie probó»", "debe_fallar": ["cita"]},
+    {"nombre": "cita_sin_archivo", "prueba": "herramientas/ingesta.py --autoprueba; caso «cualquier cosa»", "debe_fallar": ["cita"]},
+    {"nombre": "texto_libre", "prueba": "pregunta en la spec", "debe_fallar": ["vaga"]},
+    {"nombre": "regla_sin_corrida", "prueba": "regla de tipo conservación", "debe_fallar": ["vaga"]},
+    {"nombre": "sin_prueba", "prueba": "", "debe_fallar": ["vaga"]}
+  ]
+}

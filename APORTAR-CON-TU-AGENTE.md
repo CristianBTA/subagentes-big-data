@@ -96,13 +96,14 @@ Cada tipo tiene una pregunta: **¿lo atrapa hoy el repositorio?**
 - Una columna con su clase esperada (`personal`, `cuasi_o_personal`, `texto_libre` o `sin_marca`) va en `baterias/privacidad/columnas_secop.json`.
 - Un texto que **no** es personal y se marca por error va en `no_son_personales.txt`.
 - Un dato personal que no se detecta va como fila ficticia en `con_datos_personales.csv`, con sus valores en `no_deben_salir.txt`.
+- El filtro acepta en `baterias/privacidad/`, y en toda columna de personas de cualquier tabla, solo valores con la forma ficticia de los ejemplos de arriba (`Persona Ficticia…`, `000.000.00x`, `@ejemplo.invalid`, `399 000 000x`). Un documento o un celular con forma real no entra, aunque sea inventado.
 - Se prueba con `.venv/bin/python herramientas/baterias.py`. Si la batería de privacidad falla por tu caso, es un hueco.
 
 **FAILFAST.** Un CSV de pocas líneas que hoy se lee sin error y no debería:
 ```bash
 .venv/bin/python -c "import sys; sys.path.insert(0,'herramientas'); from reglas_base import leer_csv; leer_csv('baterias/failfast/<nombre>.csv')"
 ```
-Si no da error, es un hueco del lector. Para proponer el arreglo, lee `herramientas/reglas_base.py` (función `leer_csv`).
+Si no da error, es un hueco del lector. `baterias.py` además lo pasa por la ingesta local, que debe rechazarlo diciendo en qué línea. Para proponer el arreglo, lee `herramientas/reglas_base.py` (`_lector_estricto`, que comparten `leer_tabla`, `leer_csv` y `recorrer_csv`).
 
 **Mutante.**
 1. Copia `evidencia/sintetico/mutantes/m00_referencia_sin_errores.py` con el siguiente número libre y cambia **una sola cosa**.
@@ -138,6 +139,7 @@ Si al probar encuentras **otro** hueco distinto del que trajo la persona, no lo 
 
 - Revisa lo que difiere de `upstream/main`, esté o no en un commit, y no modifica ningún archivo del repositorio.
 - Debe terminar en «✓ pasa el filtro automático». Un hueco encontrado por el aporte aparece como **aviso**, no como falla.
+- Si el aporte propone un arreglo en `herramientas/` (o toca `flujo.js`, `orquestar.mjs` o `requirements.txt`, o trae un script u otro código que corre fuera de Python, o quita o cambia algo que ya estaba en las baterías o en las mutantes, o toca lo sellado de una corrida), termina en «✗ … requiere decisión del dueño». Es lo esperado: envíalo igual. Cualquier otra falla se corrige: lo de `.github/` (flujos, plantillas y CODEOWNERS) solo lo cambia el dueño.
 - Si marca una falla, corrígela y vuelve a correrlo.
 - **Córrelo tú, aunque tengas terminal y pruebas que ya pasan:** las baterías o el blindaje solos no lo reemplazan, y que el filtro también corra en GitHub tampoco. Copia la línea `RESUMEN` que imprime: va en el pull request.
 - Solo si de verdad no puedes correr Python (modo B), dilo en el pull request: el dueño lo corre antes de aprobar.
@@ -177,7 +179,7 @@ En pocas líneas:
 - [ ] El aporte trae su prueba, y dije si es un hueco o si ya estaba cubierto.
 - [ ] No hay datos reales; los ejemplos son evidentemente ficticios.
 - [ ] Solo agregué los archivos del aporte (y, si propongo un arreglo, la herramienta que corresponde, para endurecerla).
-- [ ] Corrí `validar_aporte.py`, terminó en «✓ pasa el filtro automático» y pegué su línea `RESUMEN` en el pull request (o, en modo B, dije que no pude correrlo).
+- [ ] Corrí `validar_aporte.py`, terminó en «✓ pasa el filtro automático» (o solo con «requiere decisión del dueño», si propongo un arreglo en una herramienta) y pegué su línea `RESUMEN` en el pull request (o, en modo B, dije que no pude correrlo).
 - [ ] Sin firmas de asistentes en el commit ni en el pull request.
 - [ ] No corrí el pipeline ni gasté más de lo necesario.
 

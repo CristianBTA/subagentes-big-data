@@ -1,0 +1,45 @@
+{
+  "_que_prueba": "Formas de esconder un dato personal a las expresiones del barrido (L116). El barrido de gobernanza (escanear_texto y, en una p\u00e1gina, texto_publicado) debe encontrar cada una. Los valores tienen la forma ficticia de la gu\u00eda.",
+  "casos": [
+    {
+      "nombre": "correo con la arroba de ancho completo",
+      "texto": "Dudas: persona.ficticia\uff20ejemplo.invalid",
+      "patron": "correo"
+    },
+    {
+      "nombre": "correo con la arroba peque\u00f1a",
+      "texto": "Dudas: persona.ficticia\ufe6bejemplo.invalid",
+      "patron": "correo"
+    },
+    {
+      "nombre": "correo con un espacio de ancho cero",
+      "texto": "persona.ficticia\u200b@ejemplo.invalid",
+      "patron": "correo"
+    },
+    {
+      "nombre": "correo con el punto de ancho completo y una uni\u00f3n invisible",
+      "texto": "persona\uff0eficticia@ejemplo\u2060.invalid",
+      "patron": "correo"
+    },
+    {
+      "nombre": "c\u00e9dula con un guion suave",
+      "texto": "C.C. 000.\u00ad000.001",
+      "patron": "c\u00e9dula con contexto"
+    },
+    {
+      "nombre": "celular con cifras de ancho completo",
+      "texto": "cel. \uff13\uff19\uff19 \uff10\uff10\uff10 \uff10\uff10\uff10\uff11",
+      "patron": "celular"
+    },
+    {
+      "nombre": "correo partido por una etiqueta en una p\u00e1gina",
+      "html": "<p>persona.ficticia<span>@</span>ejemplo.invalid</p>",
+      "patron": "correo"
+    },
+    {
+      "nombre": "celular con entidades y una etiqueta en una p\u00e1gina",
+      "html": "<p>cel.&#160;399 <b>000</b> 0001</p>",
+      "patron": "celular"
+    }
+  ]
+}

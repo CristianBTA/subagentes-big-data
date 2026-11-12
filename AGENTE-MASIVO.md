@@ -11,6 +11,8 @@ git clone https://github.com/CristianBTA/subagentes-big-data && cd subagentes-bi
 python3.13 -m venv .venv && .venv/bin/pip install --require-hashes -r requirements.txt
 ```
 
+En macOS, usa el Python 3.13 de Homebrew o, si es el del instalador de python.org, corre antes una vez «Install Certificates.command» (en la carpeta de Python 3.13, dentro de Aplicaciones): ese Python no trae los certificados raíz, y la ingesta, el agente masivo y la vigilancia de dependencias se detienen con «certificado no verificado» en vez de consultar datos.gov.co.
+
 **La primera vez cuenta las filas de todo el catálogo**, y eso tarda horas: unos 8.470 conjuntos, de 1 a 4 segundos cada uno. Queda en `fuentes/catalogo/.cache.json`; las veces siguientes usa esa caché, y `--actualizar` retoma el conteo. Nada de eso entra a Git.
 
 ## Fuentes autorizadas: el agente no se conecta a nada que no declares
@@ -87,8 +89,8 @@ Si tu IA de terminal permite comandos propios, crea uno con el texto de la forma
 4. **Tamaño medido sin IA** (`dictamen_bigdata.py`): nivel 1, «no es big data»; nivel 2, «frontera»; nivel 3, «big data». La IA no escribe este dato. Si un conjunto no se puede medir, el agente lo avisa y lo deja fuera.
 5. **Encargo para la IA,** desde `plantillas/encargo_fichas.md`.
 6. **La IA escribe las fichas.**
-7. **Validación sin IA,** contra la fuente real y sin caché (`validar_ficha.py`, de V1 a V16): columnas, consultas reales, cruces medidos, grano, sumas creíbles, lugar, k-anonimato, normas verificadas y que no haya conclusiones. El resultado queda en `RESULTADO.md`.
-8. **Whitepaper para el estudiante, sin IA** (`whitepaper_fichas.py`): el resumen en **tres hojas tamaño carta** (`WHITEPAPER.pdf` y `.html`). La primera hoja es el panorama con la tabla de conjuntos; la segunda y la tercera, las fichas y una guía para el análisis. No concluye ni agrega cifras: el análisis lo hace el estudiante. Se imprime con Chrome y se cuentan las páginas; la letra no baja de 8,5 pt, y si no caben todas las fichas, el documento nombra las que quedaron fuera.
+7. **Validación sin IA,** contra la fuente real y sin caché (`validar_ficha.py`, de V1 a V16): columnas, consultas reales, cruces medidos, grano, sumas creíbles, lugar, k-anonimato, normas verificadas y que no haya conclusiones (con la lista D15 del whitepaper del pipeline). El resultado queda en `RESULTADO.md`.
+8. **Whitepaper para el estudiante, sin IA** (`whitepaper_fichas.py`): el resumen en **tres hojas tamaño carta** (`WHITEPAPER.pdf` y `.html`). La primera hoja es el panorama con la tabla de conjuntos; la segunda y la tercera, las fichas y una guía para el análisis. No concluye ni agrega cifras: el análisis lo hace el estudiante, y el resumen de la IA entra solo si pasa la misma lista D15. Se imprime con Chrome y se cuentan las páginas; la letra no baja de 8,5 pt, y si no caben todas las fichas, el documento nombra las que quedaron fuera.
 
 ## Uso local: el agente se usa, no se modifica
 

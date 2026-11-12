@@ -6,7 +6,9 @@ informe_extra.json
 *.tmp
 # Los datos de SECOP II no se publican: se descargan con herramientas/ingesta.py y el contrato de datos
 ejemplo-secop/datos/
-corridas/*/datos/
+corridas/*/datos/*.csv
+# el índice genérico de antes (ya no se escribe); la procedencia de cada tabla (procedencia_<tabla>.json) sí se publica
+corridas/*/datos/procedencia.json
 corridas/*/limpio/
 evidencia/secop/referencia_servidor.json
 **/caso_conocido/_limpio/
@@ -18,3 +20,8 @@ fuentes/fichas/
 corridas/*/motor/
 # uso local del agente masivo: catálogo, fichas y resultados nunca se publican
 fuentes/
+# La carpeta de trabajo de las personas (plantillas/analisis_humano.md, verificar_hipotesis.py --preparar): sus datos
+# y sus tablas nunca se publican; su hipótesis, su consulta y la plantilla llena sí
+analisis/**/datos/
+analisis/**/limpio/
+analisis/**/*.csv

@@ -200,7 +200,9 @@ NO_PERSONAL = {"total", "conteo", "cantidad", "count", "n", "len", "longitud", "
                "existe", "presente", "ok", "formato", "id", "de_entidad", "entidad"}
 _ruta_secop = Path(__file__).resolve().parent.parent / "baterias" / "privacidad" / "columnas_secop.json"
 try:
-    PERSONALES_EXACTOS |= set(json.loads(_ruta_secop.read_text(encoding="utf-8")).get("personal", []))
+    # la lista de columnas también trae nombres genéricos («nombre», «nombres»): como columna identifican a personas, pero
+    # en el código son variables corrientes y solo cuentan si vienen de una fila de datos (CAMPOS_DE_FILA, L59)
+    PERSONALES_EXACTOS |= set(json.loads(_ruta_secop.read_text(encoding="utf-8")).get("personal", [])) - CAMPOS_DE_FILA
 except (OSError, ValueError):
     pass
 ENMASCARA = re.compile(r"(?i)(mask|enmascar|ofusc|ocult|redact|anonim|seudonim|pseudonim|hash|sha\d|^len$|(?<!value_)count|^sum$|nunique|notna|isna|isnull|notnull|^bool$|^type$|"

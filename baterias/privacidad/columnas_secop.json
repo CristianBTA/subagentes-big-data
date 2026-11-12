@@ -1,5 +1,5 @@
 {
-  "_nota": "Clase esperada de columnas de SECOP II - Contratos Electrónicos (jbjy-vk9h). Que SECOP sea público no autoriza a usar cédulas, nombres de personas ni datos bancarios (Ley 1581 de 2012): estas columnas no se ingieren sin justificación escrita.",
+  "_nota": "Clase esperada de columnas de SECOP II - Contratos Electrónicos (jbjy-vk9h). Que SECOP sea público no autoriza a usar cédulas, nombres de personas ni datos bancarios (Ley 1581 de 2012): estas columnas no se ingieren sin justificación escrita. Desde el 6-nov-2026 también trae nombres genéricos que usan otros conjuntos y CSV locales (nombre, nit, contratista…), los datos sensibles de la Ley 1581 (art. 5 y 7), que cuentan como cuasi y además piden base legal en la ingesta, y columnas que se clasifican por su descripción en los metadatos.",
   "personal": [
     "documento_proveedor",
     "proveedor_adjudicado",
@@ -16,7 +16,20 @@
     "n_mero_de_documento_supervisor",
     "nombre_ordenador_de_pago",
     "n_mero_de_documento_ordenador_de_pago",
-    "direcci_n_de_ejecuci_n_del_contrato"
+    "direcci_n_de_ejecuci_n_del_contrato",
+    "nombre",
+    "nombres",
+    "apellidos",
+    "contratista",
+    "nombre_contratista",
+    "nombre_del_proveedor",
+    "razon_social",
+    "nit",
+    "numero_documento",
+    "doc_identidad",
+    "mail",
+    "movil",
+    "whatsapp"
   ],
   "cuasi_o_personal": [
     "tipodocproveedor",
@@ -25,7 +38,13 @@
     "tipo_de_documento_ordenador_de_pago",
     "g_nero_representante_legal",
     "nacionalidad_representante_legal",
-    "tipo_de_identificaci_n_representante_legal"
+    "tipo_de_identificaci_n_representante_legal",
+    "genero",
+    "edad",
+    "fecha_nacimiento",
+    "estrato",
+    "latitud",
+    "longitud"
   ],
   "texto_libre": [
     "objeto_del_contrato",
@@ -47,6 +66,57 @@
     "tipo_de_contrato",
     "urlproceso",
     "justificacion_modalidad_de",
-    "descripcion_documentos_tipo"
+    "descripcion_documentos_tipo",
+    "tipo_automovil",
+    "localizaci_n",
+    "recursos_propios_alcald_as_gobernaciones_y_resguardos_ind_genas_"
+  ],
+  "sensible": [
+    "etnia",
+    "discapacidad",
+    "regimen_salud",
+    "es_indigena",
+    "orientacion_sexual",
+    "huella_dactilar",
+    "religion",
+    "menor_de_edad"
+  ],
+  "por_descripcion": [
+    {
+      "columna": "campo_7",
+      "descripcion": "Número de cédula del beneficiario",
+      "clase": "personal"
+    },
+    {
+      "columna": "campo_8",
+      "descripcion": "Nombre del contratista",
+      "clase": "personal"
+    },
+    {
+      "columna": "campo_9",
+      "descripcion": "Fecha de nacimiento de la persona",
+      "clase": "cuasi"
+    },
+    {
+      "columna": "campo_10",
+      "descripcion": "Grupo étnico al que pertenece",
+      "clase": "cuasi",
+      "sensible": true
+    },
+    {
+      "columna": "nombre_entidad",
+      "descripcion": "Nombre de la entidad del estado que publica el contrato",
+      "clase": null
+    },
+    {
+      "columna": "nit_entidad",
+      "descripcion": "NIT de la entidad del estado que publica el contrato",
+      "clase": null
+    },
+    {
+      "columna": "localizaci_n",
+      "descripcion": "Ubicación completa de la entidad del estado que publica el contrato",
+      "clase": null
+    }
   ]
 }

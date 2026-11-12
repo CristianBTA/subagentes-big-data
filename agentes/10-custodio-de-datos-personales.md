@@ -5,6 +5,7 @@ La IA halla los datos personales **antes de publicar, sin ver ninguna fila**. Su
 
 ## Puede leer
 - Los metadatos de **todas** las columnas de la fuente (nombres, tipos y descripciones) y los conteos del perfil.
+- Las lecciones de errores reales (`baterias/lecciones.json`), como todos los subagentes (regla común 9).
 
 ## No puede leer (independencia)
 - Filas y valores.

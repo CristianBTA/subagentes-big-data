@@ -48,6 +48,7 @@ Solo lees estos. Junto a cada ficha está `<id>.dictamen.json`, el tamaño medid
 
 1. **Grano (V10).** Di qué es una fila y cuál es su llave; se mide que la llave sea única. Si el conjunto es muy grande, acota esa medición con `grano.muestra_where`. Si cada fila es un grupo con una columna de conteo, **súmala**: no cuentes filas.
 2. **Preguntas.** Entre 2 y 6, cada una con «¿» y «?», sin cifras y sin conclusiones.
+   - Las plantillas, las preguntas, su `por_que_importa` y el `para_que` de un cruce no concluyen, no recomiendan, no buscan causas ni juzgan (V6, con la lista D15 del whitepaper): ni «se concluye», «esto muestra que», «se recomienda», «hay que», «conviene», «por eso», «se debe a» ni «sobrecosto», tampoco negados. En los textos de método (nota, riesgos de lectura, pasos) puedes indicar el método («hay que unificar los nombres antes de comparar»), sin conclusiones, causas ni juicios.
    - **Costo:** suma dinero y lo **contrasta** con una referencia (V9 y V16): valor del contrato frente a lo pagado, precio base frente a lo adjudicado.
    - **Calidad:** mira estados, fechas, vacíos o días adicionados.
    - **Impacto:** agrupa por lugar, sector o población.
@@ -56,7 +57,7 @@ Solo lees estos. Junto a cada ficha está `<id>.dictamen.json`, el tamaño medid
 5. **Lugar (V12).** No uses columnas que sean mayoría de «No disponible» ni una sola sede. En SECOP, `departamento` y `ciudad` son la sede de la entidad, no el lugar de ejecución.
 6. **Cruces (V5 y V13).** Con llaves de negocio (`id_contrato`, `id_portafolio`, `proceso_de_compra`, `divipola`); nunca por el NIT de la entidad, porque es muchos a muchos. Si no hay un cruce con propósito, deja la lista vacía.
 7. **Datos personales (V3).**
-   - Todas las columnas personales o cuasi-identificadoras van en `excluir` o en `seudonimizar`, incluidos nombres de proveedores, matrículas inmobiliarias y folios.
+   - Todas las columnas personales, cuasi-identificadoras o de datos sensibles (un diagnóstico, la etnia, la discapacidad) van en `excluir` o en `seudonimizar`, incluidos nombres de proveedores, matrículas inmobiliarias y folios.
    - En datos sensibles (salud, víctimas, menores), solo afirmaciones agregadas y k de 10 o más.
 8. **Base legal (V15 y V6).** Cita la Ley 1712 de 2014 y, si hay personas naturales, la Ley 1581 de 2012. Solo normas que estén en `baterias/normas/verificadas.json`.
 9. **Procesamiento (V8).** Coherente con el nivel medido.

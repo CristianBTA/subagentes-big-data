@@ -1,8 +1,8 @@
 {
   "etapa": "4 · Visualización · presentador",
-  "que_se_pidio": "Presentación de 53 entidades y 17,2 billones de pesos en 2025 desde el resultado aprobado, con respuesta primero, SCQA, hallazgos y límites.",
-  "que_devolvio": "presentacion.json con 3 hallazgos (gráfico, H1, H2), 7 cifras con marcadores, límites P1 a P3 y recomendación.",
-  "como_se_probo": "verificar_presentacion.py: aprobado en el intento 2 de 3; las 7 cifras salieron calculadas de los datos.",
-  "que_se_corrigio": "Intento 1 falló por escribir a mano «100.000 millones» en un título y en el próximo paso; se reemplazó por «valor extremo», sin cambiar el sentido de H2.",
-  "sin_verificar": "El verificador no comprueba que la frase use bien cada cifra: el sentido de H2 («valor extremo») quedó más vago que el umbral real y no se cuantifica en pantalla. P1, P2 y P3 siguen abiertas."
+  "que_se_pidio": "Presentación de lo preguntado y lo medido desde el resultado aprobado (53 entidades, 17,2 billones de pesos en 2025), con la forma alineada con D15: mediciones, límites y preguntas para las personas, sin conclusiones, decisiones ni recomendación.",
+  "que_devolvio": "presentacion.json con 3 mediciones (el gráfico, una tabla de las 5 entidades de mayor valor y la cifra de 49.662 contratos), 7 cifras con marcadores, límites P1 a P3 y S8, y 3 preguntas para las personas: una de costo, una de calidad y una de impacto.",
+  "como_se_probo": "verificar_presentacion.py: aprobado en el intento 2 de 3; las 7 cifras salieron calculadas de los datos y ningún texto trae lenguaje de análisis. La escribió una IA nueva (Sonnet, sin herramientas ni contexto previo) solo con la ficha 12 y los archivos que la ficha permite leer (prueba de efecto del 6-nov-2026).",
+  "que_se_corrigio": "El intento 1 falló por escribir «desde cero» en la nota del gráfico (magnitud con palabras); en el intento 2 la nota quedó sin esa frase.",
+  "sin_verificar": "El verificador no comprueba que cada frase use bien su cifra ni encuentra las frases de análisis que su lista no conoce: eso lo revisa una persona con la última lámina. P1, P2 y P3 siguen abiertas. Reemplaza la presentación anterior de esta corrida (respuesta con decisión, hallazgos con H1 y H2 y recomendación), retirada por D15."
 }

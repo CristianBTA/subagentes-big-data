@@ -40,7 +40,10 @@ def pedir(url, intentos=5):
                 time.sleep(2 ** i * 3)
                 continue
             raise
-        except Exception:
+        except Exception as e:
+            from ingesta import CertificadoNoVerificado, certificado_no_verificado
+            if certificado_no_verificado(e):   # no es pasajero: no se reintenta y dice qué hacer (L125)
+                raise CertificadoNoVerificado() from None
             if i < intentos - 1:
                 time.sleep(2 ** i * 2)
                 continue

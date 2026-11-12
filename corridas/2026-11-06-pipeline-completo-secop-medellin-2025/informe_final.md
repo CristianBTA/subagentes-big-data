@@ -9,7 +9,7 @@
 |---|---|---|---|
 | Ingesta | escribe el lector (contrato de datos: fuente, columnas, tipos, llave, dominios) | conteo contra la fuente, llave única y sin nulos, tipos, rangos, dominios, minimización, correr dos veces | ✅ |
 | Procesamiento | limpia y transforma (especificación, reglas y dos implementaciones) | reglas selladas, caso con respuesta conocida, A = B, conciliación, compuertas y caja de arena | ✅ |
-| Análisis | propone hipótesis (registradas y selladas antes de probarlas) | consulta independiente de otro agente, umbral y línea base, registro previo | ✅ |
+| Análisis | solo resume lo desarrollado en un whitepaper: el análisis lo hacen las personas | secciones obligatorias, cada cifra en los artefactos verificados, sin conclusiones ni recomendaciones, preguntas de costo, calidad e impacto | ✅ |
 | Visualización | genera el gráfico | cuenta de control, eje desde cero, título, unidades, fuente y fecha, sin datos personales | ✅ |
 | Gobernanza | halla datos personales (con nombres, tipos y conteos; nunca filas) | barrido determinista, salidas limpias, k-anonimato, comparación con la IA | ✅ |
 
@@ -77,7 +77,8 @@
 ## 1 · Ingesta: la IA escribe el lector
 - Fuente: SECOP II - Contratos Electrónicos · https://www.datos.gov.co/resource/jbjy-vk9h.csv?%24select=id_contrato%2Cnit_entidad%2Ccodigo_entidad%2Cnombre_entidad%2Cfecha_de_firma%2Cvalor_del_contrato&%24where=ciudad%3D%27Medell%C3%ADn%27+AND+fecha_de_firma+%3E%3D+%272025-01-01T00%3A00%3A00%27+AND+fecha_de_firma+%3C+%272026-01-01T00%3A00%3A00%27
 - Consultado: 06-11-2026 05:29 · filas 49.662 · conteo de la fuente 49.662
-- Huella SHA-256 del archivo: `aa99342d28e5cdbb…`
+- Huella SHA-256 del archivo: `aa99342d28e5cdbb63cb1fe35bc784fbeac6a798c3b875b8458081292a6cf8d2`
+- Nota: Procedencia de una carga anterior al arreglo GOB-2 (6-nov-2026), publicada sin cambiar ninguna cifra ni huella; «archivo» quedó relativo al repositorio. Su «origen» no lleva $order ni $limit y no reproduce la descarga (la revisión del 6-nov-2026 lo pidió: 1.001 líneas, el encabezado y las 1.000 filas que la API da por defecto). La consulta que se ejecutó fue esa misma, ordenada por la llave ($order=id_contrato) y en páginas de 50.000 filas ($limit y $offset), según herramientas/ingesta.py de ese día. La versión de la fuente (rowsUpdatedAt) no se guardó.
 
 | Prueba de la carga | Resultado | Detalle |
 |---|---|---|
@@ -214,7 +215,7 @@ Por cada NIT de entidad del archivo (que ya trae solo entidades con ciudad = Med
 | Compuertas | seguridad y librerías | Sin código peligroso ni librerías fuera de la lista, antes de ejecutar (corre en caja de arena: sin red ni escritura) | ✅ | ✅ |
 | Repetible | correr dos veces da lo mismo | La segunda corrida da exactamente el mismo resultado | ✅ | ✅ |
 | Conciliación | todo conteo cierra | Filas leídas = usadas + excluidas por motivo; nada se borra en silencio | ✅ | ✅ |
-| Tiempo | medir | Segundos de una corrida con los datos reales | 0.6 s | 0.49 s |
+| Tiempo | medir | Segundos de una corrida con los datos reales | 0.54 s | 0.54 s |
 
 ### Conciliación de filas (implementación A)
 - Filas leídas: **49.662** · usadas: **49.662**
@@ -244,7 +245,21 @@ Se anticipó valor_contratado entre 16.000.000.000.000 y 18.000.000.000.000 (El 
 _Criterio sellado: sí, sin cambios._
 
 
-## 3 · Análisis: la IA propone hipótesis
+## 3 · Análisis: lo hacen las personas
+La IA no da el análisis: el documentador resume lo desarrollado en un whitepaper, y las personas del curso analizan, con su hipótesis escrita antes de mirar y su conclusión en la plantilla.
+- Whitepaper: [whitepaper.md](whitepaper.md) · validación sin IA (`validar_whitepaper.py`): ✅ aprobada · 41 de 41 cifras en los artefactos verificados
+- En tres hojas carta, para imprimir: [WHITEPAPER.pdf](WHITEPAPER.pdf) (maquetado sin IA por `whitepaper_corrida.py` desde el texto validado)
+
+| Comprobación | Resultado | Detalle |
+|---|---|---|
+| W1 secciones obligatorias | ✅ | las 8 secciones, en orden y con contenido |
+| W2 cifras de los artefactos verificados | ✅ | 41 cifra(s), todas en los artefactos verificados · artefactos: informe.json, gobernanza.json, grafico_verificacion.json, datos/procedencia.json, datos/procedencia_contratos.json, limpieza_contratos.json |
+| W3 sin conclusiones, recomendaciones ni causas | ✅ | describe lo hecho y lo medido; el análisis queda para las personas |
+| W4 preguntas para las personas | ✅ | 6 preguntas, de costo, calidad e impacto |
+| W5 sin instrucciones, datos personales ni texto oculto | ✅ | ninguno |
+- Plantilla para el análisis de las personas: [plantillas/analisis_humano.md](../../plantillas/analisis_humano.md)
+
+### Historial: hipótesis de la IA (retirado el 6-nov-2026)
 | Hipótesis | Umbral | Valor | Línea base | Veredicto |
 |---|---|---|---|---|
 | **H1** Al menos la mitad del valor contratado total sale de los contratos atípicos por arriba (marcados como atípicos y de más de unos 2.424.798.562 pesos). | >= 0.5 | 0,82 | 0,02 (Reparto proporcional al número de contratos: fracción de las 49.662 filas que son atípicos por arriba (calidad_atipico = 1 y valor_del_contrato > 1.000.000).) | se sostiene |
@@ -253,7 +268,7 @@ _Criterio sellado: sí, sin cambios._
 | **H4** Enero concentra al menos el doble de contratos que un mes de reparto uniforme: el 17 % o más de los contratos de 2025. | >= 0.17 | 0,25 | 0,08 (Reparto uniforme por días del año: 31/365 = 0,0849.) | se sostiene |
 | **H5** Los contratos de valor cero o simbólico (menos de 10 pesos) se concentran: en al menos una entidad con 100 contratos o más son el 10 % o más de sus contratos. | >= 0.1 | 0,13 | 0,01 (Proporción de filas con valor_del_contrato < 10 en todo el archivo (sobre las 49.662 filas).) | se sostiene |
 
-_Las hipótesis se sellaron antes de probarlas; la consulta de cada una la escribió otro agente, sin ver el razonamiento de quien las propuso._
+_Hasta el 6-nov-2026 la IA proponía hipótesis, las sellaba antes de probarlas y otro agente escribía la consulta de cada una. Ese paso se retiró: el análisis lo hacen las personas. Se conserva como historial de esta corrida._
 
 ## 4 · Visualización: la IA genera el gráfico
 Gráfico: [grafico.html](grafico.html)
@@ -267,7 +282,10 @@ Gráfico: [grafico.html](grafico.html)
 | eje de valores con título y unidades | ✅ | Valor contratado (miles de millones de pesos) |
 | título con qué se mide y el período | ✅ | <b>Valor contratado en 2025 por entidad con sede en Medellín</b><br><span style="font-size:13px;color:#52514e">53 entidades · 49.662 contratos · 17,2 billones de pesos (17.248 mil millones). Las 15 de mayor valor suman el 97,6 %.</span> |
 | fuente y fecha de consulta visibles | ✅ | fuente «secop»: sí · fecha ['06-11-2026']: sí |
-| sin HTML en el texto que viene de los datos, ni enlaces o scripts | ✅ | ninguno |
+| sin HTML de los datos sin escapar, ni enlaces o scripts | ✅ | ninguno |
+| sin caracteres invisibles o bidireccionales en el texto publicado | ✅ | ninguno |
+| la fuente y la fecha salen de la procedencia, no del código | ✅ | con una procedencia de control, el gráfico muestra su fecha |
+| sin textos con forma de instrucción para una IA | ✅ | ninguno |
 | sin datos personales en el gráfico | ✅ | ninguno |
 
 ## 5 · Gobernanza: la IA halla datos personales
@@ -280,6 +298,9 @@ Gráfico: [grafico.html](grafico.html)
 - Recomendación del custodio: Nunca ingerir n_mero_de_cuenta, nombre_del_banco ni tipo_de_cuenta: hay 572.240 números de cuenta distintos en la fuente (Ley 1581, art. 4 lit. f y g).
 - Recomendación del custodio: Texto libre (objeto_del_contrato, descripcion_del_proceso, referencia_del_contrato, direcci_n_de_ejecuci_n_del_contrato): solo con justificación escrita y barrido de gobernanza.py antes de publicar (L11).
 - Recomendación del custodio: Ordenadores del gasto, supervisores y ordenadores de pago: su nombre es público por el cargo (Decreto 1377 de 2013, art. 3), pero no se publican tablas por persona sin justificación escrita.
+
+## Integridad del pipeline
+- Sin manifiesto de integridad en esta corrida (se agregó después).
 
 ## Seguridad del código que escribió la IA
 - Archivos de la IA revisados con compuertas (librerías permitidas, reglas propias y Bandit) antes de ejecutarse: grafico.py, hipotesis.py, impl_a.py, impl_b.py, reglas.py.
@@ -294,10 +315,16 @@ Gráfico: [grafico.html](grafico.html)
   - suma_desborda_float: Cada valor pasa la prueba de número finito, pero la suma de un NIT puede pasarse del máximo de float: B devuelve valor_contratado = inf sin aviso sobre el total y A se cae con OverflowError en math.fsum (impl_a.py, línea 351). Hoy R1 lo ataja porque inf − inf no es <= 0,5. Corrección: comprobar que cada total sea finito y fallar con un motivo claro. — confirmado
   - marcas_desde_encabezado: _otras_marcas (líneas 219-228 y 319) vuelve cualquier columna calidad_<texto> una clave de «marcadas» con el texto tal como viene en el encabezado; impl_b hace lo mismo (líneas 174-178 y 275), y verificar.py (línea 542) escribe esas claves en informe.md, que se publica y que leen otros agentes. Un encabezado preparado mete ahí texto libre: Markdown con una imagen remota o instrucciones para una IA. En esta corrida el encabezado lo arma la limpieza sobre 6 columnas fijas de la consulta, así que hoy no se puede explotar. Corrección: aceptar solo nombres de marca con [a-z0-9_] o los del plan. — confirmado
 - Baterías (lo que falló una vez, probado otra vez):
-  - ✓ seguridad: 28 casos
-  - ✓ privacidad: 59 casos
-  - ✓ failfast: 3 casos
-  - ✓ lecciones: 24 casos
+  - ✓ seguridad: 479 casos
+  - ✓ privacidad: 100 casos
+  - ✓ failfast: 158 casos
+  - ✓ inyeccion: 18 casos
+  - ✓ cruces: 18 casos
+  - ✓ fechas: 5 casos
+  - ✓ repetidos: 4 casos
+  - ✓ factor: 7 casos
+  - ✓ grafico: 17 casos
+  - ✓ lecciones: 123 casos
 
 ## Bitácora del copiloto
 | Etapa | Qué se pidió | Qué devolvió | Cómo se probó | Qué se corrigió | Qué quedó sin verificar |
@@ -313,3 +340,4 @@ Gráfico: [grafico.html](grafico.html)
 | Visualización | Graficador: grafico.json y grafico.py, con graficar(resultado, procedencia) que devuelve una figura de Plotly, para el valor contratado en 2025 por entidad con sede en Medellín (53 filas aprobadas). Reglas del módulo 4 y aprobación de verificar_grafico.py en máximo 3 intentos. | Barras horizontales de mayor a menor, desde cero, en miles de millones de pesos (escala 1e9). Las 15 entidades de mayor valor van una por una y suman 16.828 mil millones (97,6 %). Las otras 38 van juntas en la barra gris «Otras 38 entidades»: 420,2 mil millones (2,4 %) y 3.969 contratos. Nada queda fuera (fuera_del_grafico = 0). El título dice qué, dónde y cuándo. El subtítulo da 53 entidades, 49.662 contratos y 17,2 billones de pesos (17.248 mil millones). Cada barra lleva su valor y su porcentaje. El NIT, el nombre completo y el número de contratos salen en el cuadro del puntero. La nota trae la fuente, la atribución, la licencia CC BY-SA 4.0 y la fecha de consulta 06-11-2026. periodo_incompleto = false: 2025 está cerrado y la consulta es del 06-11-2026. El alto es de 600 px, para que quepa en el marco de 620 px del informe final. | Antes de escribir se leyeron las 14 lecciones, el glosario, la petición, la procedencia y el resultado aprobado; del resultado solo se miraron nombres, tipos, conteos y sumas. verificar_grafico.py aprobó los 3 intentos con 8 de 8 comprobaciones. Compuertas: sin hallazgos, solo importa datetime y plotly, 0 avisos de Bandit. Cuenta de control: 17.248.249.407.618,69 en el gráfico y en la tabla, diferencia 0,00. También aprobó el eje desde 0, el eje con unidades, el título con período, la fuente y fecha y los 0 datos personales. Prueba previa propia, corrida 3 veces, con 7 casos: procedencia vacía, procedencia real, resultado vacío, 16 filas, 17 filas, consulta antes de cerrar 2025, y 3 nombres repetidos más 1 vacío. En los 7 casos cerró la cuenta de control y las etiquetas salieron únicas. Con la procedencia real, el texto trae «secop» y «06-11-2026». El período incompleto solo se marca cuando la consulta es de 2025. Capturas en Chrome sin ventana a 1068×620, 820×620 y 1400×700: sin textos cortados ni encimados. | El intento 1 aprobó, pero las capturas mostraron 9 de 15 nombres recortados a 42 caracteres. Algunos quedaban ambiguos: solo el tipo de entidad y el departamento. El límite subió a 52 caracteres: quedan 5 nombres recortados por el medio, con su inicio y su final. El margen izquierdo pasó de 300 a 340 px en el intento 2 y a 370 px en el intento 3. Así la nota de la fuente quedó alineada con el título: el margen automático la había corrido unos 25 px. | verificar_grafico.py no encontró la procedencia. La busca en la raíz de la corrida y junto a spec.datos (limpio/), pero está en datos/. Por eso graficar recibió {} y la comprobación de fuente y fecha pasó sin comparar la fecha real: el verificador muestra «fuente» y fecha []. El gráfico usa como respaldo los metadatos de datos/procedencia.json, escritos en grafico.py (fuente, conjunto, licencia y fecha; ningún dato). informe_final.py busca la procedencia de la misma forma, así que puede dar la ingesta como no corrida. Las notas sobre las preguntas abiertas y las regionales se tomaron de spec.json, no de los datos. Las preguntas abiertas son P1 (NIT y no unidad), P2 (una universidad privada) y P3 (operaciones de crédito público); las regionales de entidades nacionales son el supuesto S8. Independencia parcial: además de lo que permite la ficha, se leyeron spec.json, verificar_grafico.py y gobernanza.py; no se abrieron contratos.csv ni la capa limpia. El ancho de las etiquetas solo se midió con la letra del sistema de macOS; en Windows o Linux el margen automático puede correr la nota unos píxeles. No hay modo oscuro, porque el HTML lo escribe el verificador sin estilos propios. |
 | Gobernanza | Custodio: clasificar las 95 columnas de SECOP II (jbjy-vk9h) en personal, cuasi o sin_marca con metadatos y conteos, sin ver filas, y recomendar qué se puede publicar del valor contratado 2025 por entidad de Medellín. | custodio.json con 95 columnas (13 personales, 13 cuasi, 69 sin_marca) y 10 recomendaciones. Las 6 columnas ingeridas son sin_marca; las 28 marcadas (por la IA o por el código) quedaron fuera de la ingesta. Al menos 42.633 de 49.662 contratos (85,8 %) tienen proveedor con cédula de ciudadanía. | Se leyeron las 14 lecciones antes de escribir (aplican L05, L06, L11 y L13). Metadatos de la API de vistas: 95 columnas con nombre, tipo y descripción; top, mínimos y máximos se descartaron al bajar, sin mirarlos. perfil.json, solo conteos (6 columnas, 0 vacíos). 7 consultas a Socrata, todas de metadatos o agregados: 49.662 filas en el recorte y 5.683.345 en la fuente; no nulos de 30 columnas; distintos de 65 columnas de texto en el recorte y de 8 en toda la fuente. Validación del JSON: 95 columnas, sin repetidas, mismos nombres que la fuente, 3 clases válidas. Comparación previa con la regla por nombre de gobernanza.py (sin filas): coinciden 25, solo la IA 1 (referencia_del_contrato), la IA no marcó 2. Ningún valor descargado ni impreso. | justificacion_modalidad_de, descripcion_documentos_tipo y condiciones_de_entrega parecían texto libre por su descripción: con 44, 20 y 33 valores distintos en 5.683.345 filas son listas cerradas y quedaron sin_marca. nombre_representante_legal: la descripción dice «de la entidad», pero 24.992 nombres para 59 entidades muestran que es del proveedor. direcci_n_de_ejecuci_n_del_contrato bajó de personal a cuasi (114 valores en el recorte: sedes más que viviendas). | Que ninguna de las listas cerradas tenga un valor con un nombre: no se miró ningún valor. Las personas naturales pueden ser más del 85,8 %: no se contaron cédula de extranjería ni pasaporte. Los no nulos (49.662 en las 30 columnas) pueden incluir marcadores de vacío. gobernanza.py no se corrió (le toca a la etapa final): marcará «la IA no vio» en justificacion_modalidad_de y descripcion_documentos_tipo por desacuerdo deliberado. Independencia parcial: se leyó gobernanza.py para el formato y se vio su regla por nombre; no se leyó la batería columnas_secop.json. No se abrieron las 23 filas de caso_conocido/contratos.csv, que se versionaría: falta confirmar que es sintético. |
 | Gobernanza | Revisión ciega de seguridad de los 5 archivos de la IA (impl_a, impl_b, reglas, hipotesis y grafico), con una prueba por hallazgo y los de código peligroso a la batería. | 8 hallazgos, los 8 confirmados con prueba: 4 de severidad media y 4 baja; ninguno de ejecución de código, red, escritura ni datos personales. 2 a la batería: la compuerta bloquea hoy 1 (controles bidireccionales en reglas.py) y no bloquea 1 (lectura fuera de datos en hipotesis.py). | Lectura de los 5 archivos y compuertas sobre los 5 (hoy bloquean reglas.py por Bandit B613). 8 pruebas en seguridad/ con datos sintéticos: 6 de comportamiento, que imprimen REPRODUCIDO, y 2 fragmentos que quedaron en baterias/seguridad/malos. Gráfico abierto en Chrome sin ventana: 1 enlace inyectado y 0 enlaces javascript:. Compuerta repetida con un Python sin Bandit: deja pasar reglas.py. | Nada del código revisado (no se modifica). La batería de seguridad pasó de 25 a 27 casos y queda con 1 falla a propósito (lee_fuera_de_datos) hasta que la compuerta bloquee lecturas fuera de datos. | Por qué la compuerta dejó pasar reglas.py a las 06:07: un Python sin Bandit o la versión de seguridad.py anterior a las 06:26. El enlace en el cuadro del puntero se vio en la figura, no pasando el puntero en el navegador. No se midió memoria ni tiempo con archivos grandes (solo revisión: sin expresiones regulares de riesgo). Solo se corrió la batería de seguridad, no las de privacidad y lecciones. |
+| 4 · Visualización · presentador | Presentación de lo preguntado y lo medido desde el resultado aprobado (53 entidades, 17,2 billones de pesos en 2025), con la forma alineada con D15: mediciones, límites y preguntas para las personas, sin conclusiones, decisiones ni recomendación. | presentacion.json con 3 mediciones (el gráfico, una tabla de las 5 entidades de mayor valor y la cifra de 49.662 contratos), 7 cifras con marcadores, límites P1 a P3 y S8, y 3 preguntas para las personas: una de costo, una de calidad y una de impacto. | verificar_presentacion.py: aprobado en el intento 2 de 3; las 7 cifras salieron calculadas de los datos y ningún texto trae lenguaje de análisis. La escribió una IA nueva (Sonnet, sin herramientas ni contexto previo) solo con la ficha 12 y los archivos que la ficha permite leer (prueba de efecto del 6-nov-2026). | El intento 1 falló por escribir «desde cero» en la nota del gráfico (magnitud con palabras); en el intento 2 la nota quedó sin esa frase. | El verificador no comprueba que cada frase use bien su cifra ni encuentra las frases de análisis que su lista no conoce: eso lo revisa una persona con la última lámina. P1, P2 y P3 siguen abiertas. Reemplaza la presentación anterior de esta corrida (respuesta con decisión, hallazgos con H1 y H2 y recomendación), retirada por D15. |

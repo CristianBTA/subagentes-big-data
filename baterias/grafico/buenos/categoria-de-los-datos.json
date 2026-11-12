@@ -1,0 +1,71 @@
+{
+ "caso": "Una entidad de los datos se llama «Oficina contra la corrupción»: la palabra está en el resultado aprobado y sale como etiqueta del eje, así que es el nombre de una categoría y no lo que escribe la IA (D15).",
+ "resultado": [
+  {
+   "entidad": "Entidad A",
+   "valor": 80
+  },
+  {
+   "entidad": "Oficina contra la corrupción",
+   "valor": 71
+  },
+  {
+   "entidad": "Entidad C",
+   "valor": 62
+  },
+  {
+   "entidad": "Entidad D",
+   "valor": 53
+  },
+  {
+   "entidad": "Entidad E",
+   "valor": 44
+  }
+ ],
+ "figura": {
+  "data": [
+   {
+    "type": "bar",
+    "orientation": "h",
+    "x": [
+     80,
+     71,
+     62,
+     53,
+     44
+    ],
+    "y": [
+     "Entidad A",
+     "Oficina contra la corrupción",
+     "Entidad C",
+     "Entidad D",
+     "Entidad E"
+    ],
+    "marker": {
+     "color": [
+      "#2a78d6",
+      "#898781",
+      "#898781",
+      "#898781",
+      "#898781"
+     ]
+    }
+   }
+  ],
+  "layout": {
+   "title": {
+    "text": "Valor contratado en 2025 por entidad, en miles de millones de pesos"
+   },
+   "xaxis": {
+    "title": {
+     "text": "Valor contratado (miles de millones de pesos)"
+    }
+   },
+   "paper_bgcolor": "#ffffff",
+   "plot_bgcolor": "#ffffff",
+   "font": {
+    "color": "#444444"
+   }
+  }
+ }
+}

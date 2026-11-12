@@ -20,6 +20,7 @@ import urllib.request
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ / "herramientas"))   # ingesta nombra un certificado que no se verifica (L125)
 OSV = "https://api.osv.dev/v1/querybatch"
 
 
@@ -41,7 +42,9 @@ def main(argv):
         with urllib.request.urlopen(pedido, timeout=30) as r:  # nosec B310
             respuesta = json.loads(r.read().decode("utf-8"))
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
-        print(f"✗ no se pudo consultar OSV ({type(e).__name__}): sin respuesta no se puede decir que está limpio")
+        from ingesta import CERTIFICADO, certificado_no_verificado   # el certificado se nombra (L125)
+        motivo = CERTIFICADO if certificado_no_verificado(e) else type(e).__name__
+        print(f"✗ no se pudo consultar OSV ({motivo}): sin respuesta no se puede decir que está limpio")
         print("RESUMEN " + json.dumps({"consultadas": 0, "con_vulnerabilidades": None}, ensure_ascii=False))
         return 2
     resultados = respuesta.get("results", [])

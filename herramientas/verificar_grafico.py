@@ -27,13 +27,31 @@ Forma y color (comprobar_forma_y_color: solo lee el JSON de la figura; la prueba
  12. un solo eje de valores: sin doble eje (mejor dos gráficas o un índice con base 100)
  13. sin 3D ni tortas de más de cinco porciones
  14. escala logarítmica declarada en el título del eje o en el principal
+Lo que dice (comprobar_sin_analisis: solo lee el JSON de la figura; la prueba también es baterias/grafico/):
+ 15. sin lenguaje de análisis (D15) en ningún texto de la figura: título y subtítulo, títulos de los ejes y de la
+     leyenda, anotaciones, nombres de las trazas, plantillas del texto y del hover, etiquetas y textos por marca,
+     también los de la plantilla de la figura. Se busca con la lista D15 de validar_whitepaper.py (ANALISIS, la
+     misma de W3, de la presentación y de las fichas, buscada con buscar_d15), sobre el texto que se ve: sin
+     etiquetas HTML (Plotly junta «sobre<b>costo</b>»), sin entidades ni caracteres de formato, y también sin
+     asteriscos de énfasis y con las letras de otro alfabeto que se leen como latinas vueltas latinas (L117). Un
+     texto de una lista de valores (las categorías, customdata) que repite la frase de un valor de los datos es el
+     nombre de una categoría, no lo que escribe la IA. Es una lista: una frase de análisis con otras palabras pasa; la revisa una
+     persona (D15).
 Los colores se toman de la figura (marker.color, line.color, marker.colors) o, si no los trae, de la paleta
 (colorway) de la figura o de su plantilla, en el orden de las trazas. Ver herramientas/color.py.
 El HTML lo escribe este verificador, no el código de la IA (que corre en la caja de arena y no escribe).
+
+grafico.py pasa por la misma compuerta que reglas.py y las implementaciones (verificar.compuertas: seguridad del perfil
+pura, Bandit y librerías) y corre en la misma caja aislada que las implementaciones bajo prueba (SEG-4): sobre una copia
+de su código en una carpeta temporal nueva, sin leer el repositorio, la corrida, sus datos, las carpetas temporales ni
+ningún archivo con nombre de oráculo o de criterio (esperado.json, caso_conocido/, reglas.py, sellos*.json, hipotesis*).
+No necesita ningún archivo: el resultado aprobado y la procedencia le llegan como texto (B29, L91).
 """
+import html
 import json
 import re
 import sys
+import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -41,9 +59,11 @@ AQUI = Path(__file__).resolve().parent
 sys.path.insert(0, str(AQUI))
 import caja  # noqa: E402
 import color  # noqa: E402
-import dependencias  # noqa: E402
-import seguridad  # noqa: E402
+import verificar  # noqa: E402
 from gobernanza import escanear_texto, parece_instruccion  # noqa: E402
+from validar_whitepaper import buscar_d15  # noqa: E402  D15: la lista única del whitepaper, la presentación y las fichas
+
+TIEMPO = 300
 
 RUNNER = r'''
 import importlib.util, json, sys
@@ -56,13 +76,36 @@ print("MARCA" + fig.to_json())
 '''.replace("MARCA", caja.MARCA)
 
 
+def ejecutar(gp, resultado, procedencia, negar=()):
+    """Corre graficar(resultado, procedencia) en la caja aislada, la misma de las implementaciones bajo prueba (SEG-4):
+    sobre una copia de su código en una carpeta temporal nueva (caja.copiar_entrada, sin tablas: no las necesita), con
+    su carpeta temporal como carpeta de trabajo y sin leer el repositorio, las zonas personales y temporales, la corrida
+    (la carpeta de grafico.py), lo que recibe en `negar` (las carpetas de los datos) ni ningún archivo con nombre de
+    oráculo o de criterio (caja.ORACULO). Devuelve (figura en JSON, error)."""
+    originales = [Path(gp).resolve().parent] + [Path(str(o)).resolve() for o in negar]
+    with caja.copiar_entrada(gp, {}) as (carpeta, codigo, _):
+        # una carpeta que contiene la copia (la temporal del sistema) la cubren igual las zonas negadas de la caja
+        negadas = [o for o in dict.fromkeys(originales) if not carpeta.is_relative_to(o)]
+        return caja.correr(RUNNER, str(codigo), json.dumps(resultado, ensure_ascii=False),
+                           json.dumps(procedencia, ensure_ascii=False), tiempo=TIEMPO, lecturas=[carpeta], aislar=True,
+                           negar=negadas)
+
+
+def carpetas_de_datos(spec):
+    """Las carpetas de cada tabla de la spec (capa limpia y crudo): el gráfico no lee ninguna."""
+    rutas = list((spec.get("datos") or {}).values()) + list((spec.get("datos_crudos") or {}).values())
+    return [Path(str(r)).resolve().parent for r in rutas if r]
+
+
 def procedencia_de(c, spec):
-    from rutas import resolver
-    rutas = list((spec.get("datos_crudos") or {}).values()) + list(spec["datos"].values())   # la procedencia vive junto al dato crudo
-    for p in [c / "procedencia.json"] + [Path(resolver(r)).parent / "procedencia.json" for r in rutas]:
-        if p.exists():
-            return json.loads(p.read_text(encoding="utf-8"))
-    return {}
+    """La procedencia que recibe el gráfico (fuente y fecha): la de la primera tabla que la tiene; sin tablas en la
+    spec, la procedencia.json de la corrida (corridas viejas y pruebas del banco de blindaje)."""
+    from rutas import procedencias
+    primera = next((p for p in procedencias(c, spec).values() if p and p.get("fuente")), None)
+    if primera:
+        return primera
+    p = c / "procedencia.json"
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
 def textos(fig):
@@ -361,6 +404,60 @@ def comprobar_forma_y_color(fig):
     return checks
 
 
+# --- Lo que dice (comprobación 15): el gráfico muestra lo medido; el análisis lo hacen las personas (D15) -----------
+SIN_TEXTO = {"bdata", "dtype", "shape"}          # arreglos binarios de plotly 6+: no son texto
+SALTO_HTML = re.compile(r"<\s*br\s*/?\s*>", re.I)
+ETIQUETA_HTML = re.compile(r"<[^<>]{0,300}>")
+
+
+def cadenas(obj, ruta="", de_lista=False):
+    """Cada cadena de la figura con su ruta, también las de su plantilla: (ruta, texto, de_lista). de_lista: está en
+    una lista de valores (ejes, etiquetas, customdata, textos por marca), que puede repetir los datos; un texto suelto
+    (título, subtítulo, ejes, leyenda, anotaciones, nombre de la traza, plantillas del texto y del hover) lo escribe el
+    graficador."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k not in SIN_TEXTO:
+                yield from cadenas(v, f"{ruta}.{k}" if ruta else str(k))
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            yield from cadenas(v, f"{ruta}[{i}]", de_lista or not isinstance(v, dict))
+    elif isinstance(obj, str):
+        yield ruta, obj, de_lista
+
+
+def lo_que_se_ve(texto):
+    """El texto como lo muestra Plotly: NFKC, sin caracteres de formato, un <br> es un espacio y las demás etiquetas
+    no separan palabras («sobre<b>costo</b>» se lee «sobrecosto»), y las entidades HTML como su carácter."""
+    t = "".join(ch for ch in unicodedata.normalize("NFKC", str(texto)) if unicodedata.category(ch) != "Cf")
+    t = html.unescape(ETIQUETA_HTML.sub("", SALTO_HTML.sub(" ", t)))
+    return " ".join(t.split())
+
+
+def comprobar_sin_analisis(fig, resultado=()):
+    """Comprobación 15 sobre el JSON de una figura (sin correr código): ningún texto concluye, recomienda, busca
+    causas ni juzga (D15). `resultado`: las filas aprobadas; una frase que está en un valor de los datos y sale en una
+    lista de valores (una categoría «… contra la corrupción») es un dato, no lo que escribe la IA."""
+    datos = " · ".join(lo_que_se_ve(v).lower() for f in (resultado or []) if isinstance(f, dict)
+                       for v in f.values() if isinstance(v, str))
+    hallados = []
+    for ruta, t, de_lista in cadenas(fig):
+        for frase in buscar_d15(lo_que_se_ve(t)):   # también con énfasis o letras disfrazadas (L117)
+            if de_lista and frase in datos:
+                continue
+            hallados.append(f"{ruta}: «{frase[:40]}»")
+    hallados = list(dict.fromkeys(hallados))
+    return {"comprobacion": "sin lenguaje de análisis en el gráfico: ni conclusiones, recomendaciones ni causas (D15)",
+            "ok": not hallados,
+            "detalle": "dice qué se mide, dónde y cuándo; el análisis lo hacen las personas" if not hallados
+            else f"{len(hallados)}: " + "; ".join(hallados[:6]) + " (el título dice qué se mide, dónde y cuándo)"}
+
+
+def comprobar_figura(fig, resultado=()):
+    """Las comprobaciones 8 a 15, las que solo leen el JSON de la figura (las prueba baterias/grafico/)."""
+    return comprobar_forma_y_color(fig) + [comprobar_sin_analisis(fig, resultado)]
+
+
 def comprobar(c):
     from rutas import resolver_datos
     spec = resolver_datos(json.loads((c / "spec.json").read_text(encoding="utf-8")))
@@ -369,14 +466,20 @@ def comprobar(c):
     resultado = inf.get("resultado_oficial") or []
     proc = procedencia_de(c, spec)
     checks = []
+    from rutas import procedencias
+    procs = procedencias(c, spec)
+    if procs:   # el pie del gráfico cita la ingesta: cada tabla debe tener la suya, aprobada
+        faltan = sorted(t for t, p in procs.items() if not p or p.get("estado") != "aprobada")
+        checks.append({"comprobacion": "procedencia aprobada de cada tabla", "ok": not faltan,
+                       "detalle": "cada tabla tiene su procedencia aprobada" if not faltan else f"sin procedencia aprobada: {faltan}"})
     gp = c / "grafico.py"
-    dep = dependencias.revisar(gp)
-    seg, aviso_seg = seguridad.revisar([gp])
-    bloqueos = (dep.get("no_permitidas") or []) + (dep.get("intenta_instalar") or []) + [h["regla"] for h in seg[0]["bloquean"]] + ([f"no se pudo revisar: {aviso_seg}"] if aviso_seg else [])   # falla cerrada
+    # la misma compuerta de reglas.py y de las implementaciones; falla cerrada (sin Bandit o con una caída, no pasa)
+    bloqueos = verificar.compuertas(gp)
     checks.append({"comprobacion": "compuertas de seguridad y librerías", "ok": not bloqueos, "detalle": str(bloqueos or "sin hallazgos")})
     if bloqueos:
         return checks, None
-    fig_json, err = caja.correr(RUNNER, str(gp), json.dumps(resultado, ensure_ascii=False), json.dumps(proc, ensure_ascii=False))
+    negar = carpetas_de_datos(spec)
+    fig_json, err = ejecutar(gp, resultado, proc, negar)
     checks.append({"comprobacion": "el código del gráfico corre", "ok": err is None, "detalle": err or "devolvió una figura"})
     if err:
         return checks, None
@@ -440,7 +543,7 @@ def comprobar(c):
     # procedencia: con una procedencia falsa, el gráfico debe mostrar ESA fuente y ESA fecha (nada escrito a mano)
     falsa = dict(proc or {})
     falsa.update({"fuente": {**(proc.get("fuente") or {}), "titulo": "FUENTE-DE-CONTROL"}, "consultado": "2000-01-02T00:00:00"})
-    fig_f, err_f = caja.correr(RUNNER, str(gp), json.dumps(resultado, ensure_ascii=False), json.dumps(falsa, ensure_ascii=False))
+    fig_f, err_f = ejecutar(gp, resultado, falsa, negar)
     if fig_f is not None:
         tf = " ".join(textos(fig_f))
         sigue = any(f in tf for f in fechas_posibles(proc.get("consultado", "")))
@@ -453,7 +556,7 @@ def comprobar(c):
                    "detalle": "ninguno" if not ordenes else f"{len(ordenes)}: {ordenes[:2]} (un dato con forma de orden no se publica como dato normal: revisarlo en la fuente)"})
     pii = escanear_texto(todo)
     checks.append({"comprobacion": "sin datos personales en el gráfico", "ok": not pii, "detalle": str(pii or "ninguno")})
-    checks += comprobar_forma_y_color(fig)
+    checks += comprobar_figura(fig, resultado)
     return checks, fig
 
 

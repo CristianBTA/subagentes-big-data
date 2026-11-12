@@ -6,7 +6,7 @@
 
 - **16 activos** valorados en confidencialidad, integridad y disponibilidad.
 - **27 riesgos:** 15 superan el criterio de aceptación (nivel > 10) antes de los controles; después, 0.
-- **40 controles** del repositorio; 29 tienen prueba automática.
+- **40 controles** del repositorio; 31 tienen prueba automática.
 - **Declaración de Aplicabilidad:** 64 de los 93 controles del Anexo A aplican; 29 se excluyen con su justificación.
 
 ## La tríada por activo
@@ -209,29 +209,29 @@ prev. = preventivo, det. = detectivo, corr. = correctivo.
 |---|---|---|---|---|---|
 | CT01 | Minimización en el contrato de datos (D7) | preventivo | C | A.5.34, A.8.12 | bateria:privacidad |
 | CT02 | Datos fuera del repositorio público: .gitignore y archivos prohibidos en el filtro | preventivo | C | A.8.12, A.5.14 | sgsi:restringidos |
-| CT03 | Barrido determinista de datos personales en datos y salidas, con k-anonimato (D18) | preventivo | C | A.8.11, A.8.12, A.5.34 | bateria:privacidad |
-| CT04 | Nunca filas a la IA: el perfil y el custodio trabajan con nombres, tipos y conteos (D3, D18) | preventivo | C·I | A.8.3, A.5.34 | bateria:privacidad, B04 |
-| CT05 | Separación de funciones entre subagentes: quién puede ver qué | preventivo | C·I | A.5.3, A.5.15, A.8.3 | evidencia documental |
-| CT06 | Auditoría de independencia sobre las transcripciones reales (DB9) | detectivo | C·I | A.8.15, A.8.16, A.5.36 | evidencia documental |
-| CT07 | Criterio e hipótesis sellados con SHA-256 antes del código (D8, D15) | detectivo | I | A.8.24, A.5.33 | corrida-sintetica |
+| CT03 | Barrido determinista de datos personales en datos y salidas, con k-anonimato (D18) | preventivo | C | A.8.11, A.8.12, A.5.34 | bateria:privacidad, B26, B27 |
+| CT04 | Nunca filas a la IA: el perfil y el custodio trabajan con nombres, tipos y conteos (D3, D18) | preventivo | C·I | A.8.3, A.5.34 | bateria:privacidad, B04, B32 |
+| CT05 | Separación de funciones entre subagentes: quién puede ver qué | preventivo | C·I | A.5.3, A.5.15, A.8.3 | B24, B28, B29 |
+| CT06 | Auditoría de independencia sobre las transcripciones reales (DB9) | detectivo | C·I | A.8.15, A.8.16, A.5.36 | autoprueba:auditar_independencia |
+| CT07 | Criterio e hipótesis sellados con SHA-256 antes del código (D8, D15) | detectivo | I | A.8.24, A.5.33 | corrida-sintetica, B29 |
 | CT08 | Manifiesto de integridad de herramientas, fichas y baterías durante la corrida (DB3) | detectivo | I | A.8.9, A.8.32 | B02 |
-| CT09 | Verificación sin IA del resultado: dos implementaciones, caso conocido, conservación, conciliación y repetibilidad (D9–D13) | detectivo | I | A.8.29, A.8.30 | corrida-sintetica, B05 |
+| CT09 | Verificación sin IA del resultado: dos implementaciones, caso conocido, conservación, conciliación y repetibilidad (D9–D13) | detectivo | I | A.8.29, A.8.30 | corrida-sintetica, B05, B25, B31 |
 | CT10 | Probar al probador con mutantes (D14) | detectivo | I | A.8.29 | mutantes |
-| CT11 | FAILFAST, perfil y limpieza declarada: lo que no cumple el contrato se detiene, se explica o se marca (D3, D5, DL3–DL6) | preventivo | I | A.8.26, A.8.27 | bateria:failfast, bateria:cruces, bateria:fechas, bateria:repetidos, bateria:factor, B09, B19 |
-| CT12 | Compuerta estática (reglas propias y Bandit) y lista cerrada de librerías (D21, D22) | preventivo | C·I·D | A.8.28, A.8.7, A.8.19, A.8.30 | bateria:seguridad, B15 |
-| CT13 | Caja de arena: sin red, sin escritura, sin la carpeta personal, entorno mínimo y topes de tiempo y memoria (D23, DB2) | preventivo | C·I·D | A.8.22, A.8.31, A.8.6, A.8.1 | B00, B01, B10, B11, B12, B13, B14 |
+| CT11 | FAILFAST, perfil y limpieza declarada: lo que no cumple el contrato se detiene, se explica o se marca (D3, D5, DL3–DL6) | preventivo | I | A.8.26, A.8.27 | bateria:failfast, bateria:cruces, bateria:fechas, bateria:repetidos, bateria:factor, B09, B19, B33, B34, B39 |
+| CT12 | Compuerta estática (reglas propias y Bandit) y lista cerrada de librerías (D21, D22) | preventivo | C·I·D | A.8.28, A.8.7, A.8.19, A.8.30 | bateria:seguridad, B15, B28, B30 |
+| CT13 | Caja de arena: sin red, sin escritura, sin la carpeta personal, entorno mínimo y topes de tiempo y memoria (D23, DB2) | preventivo | C·I·D | A.8.22, A.8.31, A.8.6, A.8.1 | B00, B01, B10, B11, B12, B13, B14, B23, B24, B29 |
 | CT14 | Cadena de suministro fijada: dependencias con huella y acciones fijadas a su commit (DB7) | preventivo | I | A.5.21, A.8.19 | B08, sgsi:permisos |
 | CT15 | Vigilancia diaria de vulnerabilidades conocidas en las dependencias fijadas (OSV) | detectivo | C·I·D | A.8.8, A.5.7 | red:vulnerabilidades |
 | CT16 | Cuarentena de instrucciones: los datos y los aportes son datos, nunca órdenes (DB4) | preventivo | I | A.8.26, A.8.27 | bateria:inyeccion, B04, B07 |
 | CT17 | Salidas que no ejecutan nada al abrirse: HTML escapado y fórmulas neutralizadas (D24, DB5) | preventivo | C·I | A.8.28, A.8.26 | B03, B17, B18 |
 | CT18 | Lista de comprobación del gráfico: eje desde cero, período, fuente y cuenta de control (D17) | detectivo | I | A.8.29 | B17, bateria:grafico |
-| CT19 | Filtro automático de aportes, sin IA ni llaves (validar-aporte) | preventivo | C·I | A.8.32, A.8.29, A.8.4, A.8.25 | B07, B20, B21, B22 |
+| CT19 | Filtro automático de aportes, sin IA ni llaves (validar-aporte) | preventivo | C·I | A.8.32, A.8.29, A.8.4, A.8.25 | B07, B20, B21, B22, B35, B36, B40 |
 | CT20 | main protegida: revisión del dueño (CODEOWNERS), sin borrado ni force-push y aprobación de flujos de forks | preventivo | I·D | A.8.4, A.8.32, A.5.3, A.5.18 | evidencia documental |
 | CT21 | Comprobación diaria de que el repositorio sigue abierto a aportes | detectivo | I·D | A.8.16, A.5.30, A.5.22 | red:abierta_a_aportes |
 | CT22 | Restablecer: todo se reconstruye desde GitHub o un clon, el contrato de datos y la semilla | correctivo | I·D | A.8.13, A.8.14, A.5.29, A.5.30 | corrida-sintetica |
 | CT23 | Procedencia con fecha y huella, licencia y atribución de la fuente (D6, D19, D20) | detectivo | I | A.5.33, A.5.32, A.5.31 | evidencia documental |
-| CT24 | Baterías que solo crecen: cada error real se vuelve lección y prueba (D26) | correctivo | C·I·D | A.5.27, A.8.8 | bateria:lecciones |
-| CT25 | Banco de blindaje con control positivo, con datos y secretos ficticios en carpetas temporales (DB1, DB10) | detectivo | C·I·D | A.8.29, A.8.34, A.8.33 | B00 |
+| CT24 | Baterías que solo crecen: cada error real se vuelve lección y prueba (D26) | correctivo | C·I·D | A.5.27, A.8.8 | bateria:lecciones, B37 |
+| CT25 | Banco de blindaje con control positivo, con datos y secretos ficticios en carpetas temporales (DB1, DB10) | detectivo | C·I·D | A.8.29, A.8.34, A.8.33 | B00, B38 |
 | CT26 | Revisión ciega de seguridad con prueba por hallazgo (D25) | detectivo | C·I·D | A.5.35, A.8.29, A.5.7 | bateria:seguridad |
 | CT27 | Reparador con tope de dos rondas; lo que quede lo decide una persona | correctivo | I·D | A.8.25 | evidencia documental |
 | CT28 | Bitácora del copiloto e informe final con todo el texto escapado (D27) | detectivo | I | A.8.15, A.5.28 | B18 |
@@ -257,4 +257,4 @@ prev. = preventivo, det. = detectivo, corr. = correctivo.
 | 2026-11-06-secop-medellin-2025 | publicable: barrido de datos personales limpio; solo agregados, sin columnas de personas | íntegra: huellas del criterio recalculadas al generar este informe y resultado aprobado sin IA | reconstruible: se vuelve a descargar con el contrato de datos (ingesta.py) y se compara con la procedencia |
 | 2026-11-06-ventas-semestre | publicable: barrido de datos personales limpio; solo agregados, sin columnas de personas | íntegra: huellas del criterio recalculadas al generar este informe y resultado aprobado sin IA | reconstruible: datos sintéticos versionados y regenerables desde la semilla (generar_datos.py) |
 
-Rutas locales del equipo del dueño en archivos versionados: 21 línea(s) en 13 archivo(s) (riesgo aceptado R07; la cifra no debe crecer).
+Rutas locales del equipo del dueño en archivos versionados: 20 línea(s) en 12 archivo(s) (riesgo aceptado R07; la cifra no debe crecer).

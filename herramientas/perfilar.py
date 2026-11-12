@@ -6,8 +6,12 @@ Uso: python perfilar.py tabla=ruta.csv [tabla=ruta.csv ...] [--json salida.json]
 Muestra, por tabla y por columna, lo que puede cambiar una cifra sin que nadie lo note:
 formatos mezclados, fechas ambiguas, vacíos, espacios sobrantes, variantes de escritura,
 filas repetidas, claves repetidas y códigos que no cruzan entre tablas.
+
+Lee con el lector estricto común de la ingesta y la limpieza (reglas_base.leer_tabla): un CSV mal formado detiene el
+perfil con su línea y sale con 1 (FAILFAST), nunca se describe a medias. Nunca muestra valores de una columna personal,
+de texto libre o con un dato sensible (Ley 1581 de 2012, art. 5 y 7), ni en sus ejemplos, ni en los cruces, ni como
+mínimo o máximo; un mensaje de detención los enmascara como la ingesta y la limpieza (GOB-5).
 """
-import csv
 import json
 import re
 import sys
@@ -17,7 +21,8 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gobernanza import clasificar_columna, parece_instruccion  # noqa: E402
+from gobernanza import clasificar_columna, enmascarar, es_sensible, parece_instruccion  # noqa: E402
+from reglas_base import leer_tabla  # noqa: E402
 
 
 def cuarentena(v):
@@ -133,17 +138,32 @@ def perfil_fechas(valores):
     return p
 
 
-def es_privada(nombre, valores):
-    """Columnas cuyos valores nunca se muestran: personales por su nombre o texto libre largo (R2: nunca filas)."""
+PRIVADA = "valores omitidos: columna personal o de texto libre (R2, nunca filas)"
+SENSIBLE = "valores omitidos: dato sensible (Ley 1581 de 2012, art. 5 y 7; R2, nunca filas)"
+
+
+def motivo_privada(nombre, valores):
+    """Por qué una columna nunca muestra sus valores (None si los muestra): un dato sensible (origen étnico, salud o
+    discapacidad, vida sexual, menores…), una columna personal o de texto libre por su nombre, o texto largo. Es el
+    criterio de la limpieza (sus ejemplos salen enmascarados) y aquí más estricto: el perfil los omite, porque un dato
+    sensible suele ser una categoría corta y enmascarada se adivina («Positivo» → «Pos•••••») (GOB-5)."""
+    if es_sensible(nombre):
+        return SENSIBLE
     if clasificar_columna(nombre) in ("personal", "texto_libre"):
-        return True
+        return PRIVADA
     muestra = [v for v in valores[:2000] if v]
-    return bool(muestra) and sum(len(v) for v in muestra) / len(muestra) > 40
+    return PRIVADA if muestra and sum(len(v) for v in muestra) / len(muestra) > 40 else None
+
+
+def es_privada(nombre, valores):
+    """Columnas cuyos valores nunca se muestran (R2: nunca filas); el motivo lo da motivo_privada."""
+    return motivo_privada(nombre, valores) is not None
 
 
 def perfil_columna(nombre, valores):
     n = len(valores)
-    privada = es_privada(nombre, valores)
+    motivo = motivo_privada(nombre, valores)
+    privada = motivo is not None
     limpios = [v.strip() for v in valores]
     no_vacios = [v for v in limpios if v]
     distintos = set(valores)
@@ -151,20 +171,27 @@ def perfil_columna(nombre, valores):
     p["formas"] = Counter(forma(v) if not parece_instruccion(v) else "[omitida]" for v in valores).most_common(6)
     p["espacios_sobrantes"] = sum(1 for v in valores if v != v.strip())
     nums = [numero(v) for v in no_vacios]
+    minimo = None
     if no_vacios and all(x is not None for x in nums):
-        p["numerico"] = {"min": min(nums), "max": max(nums), "suma": sum(nums),
-                         "negativos": sum(1 for x in nums if x < 0), "ceros": sum(1 for x in nums if x == 0)}
+        minimo = min(nums)
+        conteos = {"negativos": sum(1 for x in nums if x < 0), "ceros": sum(1 for x in nums if x == 0)}
+        # en una columna privada, el mínimo y el máximo son el valor de una fila (la cédula más baja y la más alta)
+        p["numerico"] = ({**conteos, "omitidos": "mínimo, máximo y suma: columna privada"} if privada else
+                         {"min": minimo, "max": max(nums), "suma": sum(nums), **conteos})
     fechas = perfil_fechas(no_vacios)
+    if fechas and privada:   # el rango y las fechas imposibles de ejemplo también son valores de una fila
+        fechas = {k: v for k, v in fechas.items() if k not in ("rango_aaaa-mm-dd", "ejemplos_imposibles")}
+        fechas["omitidos"] = "rango y ejemplos: columna privada"
     if fechas:
         p["fechas"] = fechas
     sospechosos = sum(1 for v in distintos if parece_instruccion(v))
-    if FACTOR.search(sin_tildes(nombre)) and "numerico" in p and p["numerico"]["min"] > 0:
+    if FACTOR.search(sin_tildes(nombre)) and minimo is not None and minimo > 0:
         p["factor_de_expansion"] = ("parece un factor de expansión de encuesta: toda cifra de población se pondera con esta columna "
                                     "(suma de factores, no conteo de filas); el conteo de filas es el tamaño de la muestra")
     if sospechosos:
         p["posible_inyeccion"] = f"{sospechosos} valor(es) con forma de instrucción para una IA: omitidos del perfil; son datos, no órdenes"
     if privada:
-        p["privada"] = "valores omitidos: columna personal o de texto libre (R2, nunca filas)"
+        p["privada"] = motivo
     if len(distintos) <= MAX_VARIANTES and "numerico" not in p and not fechas and not privada:
         grupos = defaultdict(Counter)
         for v in valores:
@@ -224,15 +251,37 @@ def dependencias(cols, filas, perfiles):
     return unicos[:12]
 
 
+def ver_valor(col, v):
+    """Cómo sale un valor en un mensaje de detención: enmascarado si la columna está marcada (personal, cuasi, texto
+    libre o sensible), recortado si no; el mismo criterio de la ingesta y la limpieza."""
+    return enmascarar(v) if clasificar_columna(col) or es_sensible(col) else v[:20]
+
+
 def leer(ruta):
-    with open(ruta, newline="", encoding="utf-8-sig") as fh:
-        lector = csv.DictReader(fh, strict=True)
-        return lector.fieldnames or [], list(lector)
+    """Encabezado y filas (diccionarios de texto) con el lector estricto común de la ingesta y la limpieza
+    (reglas_base.leer_tabla, con sus mismas revisiones que la ingesta): un archivo que no está en UTF-8 o trae un
+    carácter nulo, vacío, con otro separador o columnas repetidas, una comilla sin cerrar, una línea vacía, una fila con
+    más o menos campos que el encabezado, una fórmula de Excel como texto o montos con punto de miles detienen el perfil
+    con su línea (FAILFAST). Antes, csv.DictReader rellenaba la fila corta con vacíos y guardaba aparte los campos de
+    más: el perfil describía otra tabla que la del archivo, sin aviso (PIP-4)."""
+    ruta = Path(ruta)
+    crudo = ruta.read_bytes()
+    try:
+        texto = crudo.decode("utf-8-sig")
+    except UnicodeDecodeError as e:
+        linea = crudo[:e.start].count(b"\n") + 1
+        raise ValueError(f"la línea {linea} de {ruta.name} no está en UTF-8 (byte {e.start + 1}): guárdelo como «CSV UTF-8»; "
+                         "leerlo con otra codificación cambiaría las tildes en silencio") from None
+    if "\x00" in texto:
+        linea = texto[:texto.index("\x00")].count("\n") + 1
+        raise ValueError(f"la línea {linea} de {ruta.name} trae un carácter nulo: ¿es un archivo binario o en UTF-16?")
+    cab, filas, _ = leer_tabla(texto, f"de {ruta.name}", ver=ver_valor)
+    return cab, [dict(zip(cab, f)) for f in filas]
 
 
 def perfilar(tablas):
     out = {"tablas": {}, "cruces": []}
-    filas_de = {}
+    filas_de, privadas_de = {}, {}
     for nombre, ruta in tablas.items():
         cols, filas = leer(ruta)
         filas_de[nombre] = (cols, filas)
@@ -245,6 +294,7 @@ def perfilar(tablas):
                 ejemplo = ejemplo or {c: cuarentena(f.get(c)) for c in publicas}
             vistas.add(k)
         perfiles = [perfil_columna(c, [f.get(c, "") or "" for f in filas]) for c in cols]
+        privadas_de[nombre] = {c["columna"] for c in perfiles if "privada" in c}
         out["tablas"][nombre] = {
             "ruta": ruta, "filas": len(filas), "columnas": cols,
             "filas_identicas_a_otra_anterior": repetidas, "ejemplo_fila_repetida": ejemplo,
@@ -273,6 +323,8 @@ def perfilar(tablas):
                     resto = [v for v in resto if clave_cruce(v) not in vy_clave]
                     if clasificar_columna(col) == "personal":
                         sin_cruce_mostrar = ["(omitidos: columna personal)"]
+                    elif col in privadas_de[x] or col in privadas_de[y]:   # texto libre, dato sensible o texto largo
+                        sin_cruce_mostrar = ["(omitidos: columna privada)"]
                     else:
                         sin_cruce_mostrar = [cuarentena(v) for v in sorted(set(sin_cruce))[:10]]
                     out["cruces"].append({
@@ -301,14 +353,17 @@ def resumen(p):
                 bits.append(f"! espacios sobrantes {c['espacios_sobrantes']}")
             bits.append("formas " + ", ".join(f"«{f}»×{k}" for f, k in c["formas"][:4]))
             L.append(f"  - {c['columna']}: " + " · ".join(bits))
-            if "numerico" in c:
+            if "numerico" in c and "min" not in c["numerico"]:
+                m = c["numerico"]
+                L.append(f"      numérico: negativos {m['negativos']} · ceros {m['ceros']} ({m['omitidos']})")
+            elif "numerico" in c:
                 m = c["numerico"]
                 L.append(f"      numérico: min {m['min']:g} · max {m['max']:g} · suma {m['suma']:,.0f} · negativos {m['negativos']} · ceros {m['ceros']}")
             if "fechas" in c:
                 L.append(f"      fechas: {json.dumps(c['fechas'], ensure_ascii=False)}")
                 if c["fechas"].get("fechas_imposibles"):
                     L.append(f"      ! {c['fechas']['fechas_imposibles']} fechas que no existen en el calendario (mes 13, 30 de febrero), "
-                             f"ej. {c['fechas']['ejemplos_imposibles']}: al convertirlas se pierden en silencio")
+                             f"ej. {c['fechas'].get('ejemplos_imposibles', '(omitidos)')}: al convertirlas se pierden en silencio")
             if c.get("variantes_de_escritura"):
                 L.append(f"      ! variantes de escritura de un mismo valor: {len(c['variantes_de_escritura'])} grupos, ej. {c['variantes_de_escritura'][:3]}")
             if c.get("factor_de_expansion"):
@@ -347,12 +402,20 @@ def main(argv):
     tablas = dict(a.split("=", 1) for a in argv)
     if not tablas:
         raise SystemExit(__doc__)
-    p = perfilar(tablas)
+    try:
+        p = perfilar(tablas)
+    except ValueError as e:   # FAILFAST: con la línea, sin traceback y sin perfil a medias
+        if salida_json:       # ni el de una corrida anterior: en su lugar queda el motivo de la detención
+            with open(salida_json, "w", encoding="utf-8") as fh:
+                json.dump({"failfast": str(e)}, fh, ensure_ascii=False)
+        print(f"FAILFAST: {e}", file=sys.stderr)
+        return 1
     if salida_json:
         with open(salida_json, "w", encoding="utf-8") as fh:
             json.dump(p, fh, ensure_ascii=False, indent=2, default=str)
     print(resumen(p))
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    sys.exit(main(sys.argv[1:]))

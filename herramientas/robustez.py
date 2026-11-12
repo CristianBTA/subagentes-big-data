@@ -119,12 +119,14 @@ def marca_no_declarada(cab, declaradas):
 
 
 def reparto(conc):
-    """Qué filas cuentan según la conciliación: usadas y excluidas por motivo (sin los motivos en cero)."""
+    """Qué filas cuentan según la conciliación: usadas y excluidas por motivo (sin los motivos en cero). Los conteos se
+    leen como en verificar.py (entero_estricto): un decimal, un texto o un infinito no se truncan (L112)."""
     if not isinstance(conc, dict):
         return None
+    ent = verificar.entero_estricto
     try:
-        return int(conc["usadas"]), {str(k): int(v) for k, v in (conc.get("excluidas") or {}).items() if int(v)}
-    except (KeyError, TypeError, ValueError):
+        return ent(conc["usadas"]), {str(k): ent(v) for k, v in (conc.get("excluidas") or {}).items() if ent(v)}
+    except (KeyError, TypeError, ValueError, AttributeError, OverflowError):
         return None
 
 
@@ -160,7 +162,12 @@ def total(filas, valores):
 
 
 def excluidas(conc):
-    return sum(int(v) for v in ((conc or {}).get("excluidas") or {}).values()) if isinstance(conc, dict) else None
+    if not isinstance(conc, dict):
+        return None
+    try:
+        return sum(verificar.entero_estricto(v) for v in (conc.get("excluidas") or {}).values())
+    except (TypeError, ValueError, AttributeError, OverflowError):
+        return None          # un conteo que no es entero no cuenta como exclusión declarada
 
 
 def preparar(c, spec, tabla, ruta_cruda, tmp):

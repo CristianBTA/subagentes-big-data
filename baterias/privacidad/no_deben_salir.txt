@@ -7,3 +7,6 @@ persona.ficticia@ejemplo.invalid
 399 000 0001
 Ficticia Tres
 000000003
+Etnia Ficticia
+Discapacidad Ficticia
+Diagnóstico ficticio

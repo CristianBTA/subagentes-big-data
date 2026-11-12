@@ -1,0 +1,4 @@
+id_contrato,etnia_beneficiario,discapacidad,diagnostico,objeto_del_contrato,valor_del_contrato
+S1,Etnia Ficticia Alfa,Discapacidad Ficticia Gamma,Diagnóstico ficticio Delta,Apoyo ficticio a la persona ficticia del programa,1000000
+S2,Etnia Ficticia Beta,Ninguna ficticia,Diagnóstico ficticio Épsilon,Apoyo ficticio a la persona ficticia del programa,2000000
+S3,Etnia Ficticia Alfa,Ninguna ficticia,Diagnóstico ficticio Delta,Transporte ficticio para la persona ficticia,3000000

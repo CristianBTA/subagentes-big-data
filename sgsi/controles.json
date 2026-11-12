@@ -39,7 +39,7 @@
    "evidencia": [
     {
      "archivo": ".gitignore",
-     "contiene": "^corridas/\\*/datos/$"
+     "contiene": "^corridas/\\*/datos/\\*\\.csv$"
     },
     {
      "archivo": "herramientas/validar_aporte.py",
@@ -73,7 +73,9 @@
     }
    ],
    "pruebas": [
-    "bateria:privacidad"
+    "bateria:privacidad",
+    "B26",
+    "B27"
    ]
   },
   {
@@ -96,11 +98,16 @@
     {
      "archivo": "agentes/10-custodio-de-datos-personales.md",
      "contiene": "## Nunca"
+    },
+    {
+     "archivo": "herramientas/perfilar.py",
+     "contiene": "es_sensible"
     }
    ],
    "pruebas": [
     "bateria:privacidad",
-    "B04"
+    "B04",
+    "B32"
    ]
   },
   {
@@ -125,7 +132,11 @@
      "archivo": "flujo.js"
     }
    ],
-   "pruebas": []
+   "pruebas": [
+    "B24",
+    "B28",
+    "B29"
+   ]
   },
   {
    "id": "CT06",
@@ -145,7 +156,9 @@
      "archivo": "evidencia/blindaje/auditar_independencia.py"
     }
    ],
-   "pruebas": []
+   "pruebas": [
+    "autoprueba:auditar_independencia"
+   ]
   },
   {
    "id": "CT07",
@@ -169,7 +182,8 @@
     }
    ],
    "pruebas": [
-    "corrida-sintetica"
+    "corrida-sintetica",
+    "B29"
    ]
   },
   {
@@ -220,7 +234,9 @@
    ],
    "pruebas": [
     "corrida-sintetica",
-    "B05"
+    "B05",
+    "B25",
+    "B31"
    ]
   },
   {
@@ -263,6 +279,26 @@
     },
     {
      "archivo": "baterias/failfast"
+    },
+    {
+     "archivo": "herramientas/perfilar.py",
+     "contiene": "leer_tabla"
+    },
+    {
+     "archivo": "herramientas/baterias.py",
+     "contiene": "AUTOPRUEBAS"
+    },
+    {
+     "archivo": "agentes/01-lector.md",
+     "contiene": "k_minimo"
+    },
+    {
+     "archivo": "agentes/03-limpiador.md",
+     "contiene": "vacios_maximo"
+    },
+    {
+     "archivo": "herramientas/verificar.py",
+     "contiene": "revisar_limpiezas"
     }
    ],
    "pruebas": [
@@ -272,7 +308,10 @@
     "bateria:repetidos",
     "bateria:factor",
     "B09",
-    "B19"
+    "B19",
+    "B33",
+    "B34",
+    "B39"
    ]
   },
   {
@@ -301,7 +340,9 @@
    ],
    "pruebas": [
     "bateria:seguridad",
-    "B15"
+    "B15",
+    "B28",
+    "B30"
    ]
   },
   {
@@ -336,7 +377,10 @@
     "B11",
     "B12",
     "B13",
-    "B14"
+    "B14",
+    "B23",
+    "B24",
+    "B29"
    ]
   },
   {
@@ -499,7 +543,10 @@
     "B07",
     "B20",
     "B21",
-    "B22"
+    "B22",
+    "B35",
+    "B36",
+    "B40"
    ]
   },
   {
@@ -630,10 +677,18 @@
     {
      "archivo": "herramientas/baterias.py",
      "contiene": "--leccion"
+    },
+    {
+     "archivo": "herramientas/baterias.py",
+     "contiene": "class Citas"
+    },
+    {
+     "archivo": "baterias/citas/casos.json"
     }
    ],
    "pruebas": [
-    "bateria:lecciones"
+    "bateria:lecciones",
+    "B37"
    ]
   },
   {
@@ -657,10 +712,15 @@
     },
     {
      "archivo": "evidencia/blindaje/README.md"
+    },
+    {
+     "archivo": "herramientas/mutar_controles.py",
+     "contiene": "MUTANTES"
     }
    ],
    "pruebas": [
-    "B00"
+    "B00",
+    "B38"
    ]
   },
   {

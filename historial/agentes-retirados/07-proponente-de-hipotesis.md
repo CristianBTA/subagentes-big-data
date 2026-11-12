@@ -1,4 +1,7 @@
 # Proponente de hipótesis
+
+> **Retirado el 6-nov-2026.** El análisis lo hacen las personas del curso; la IA solo lo documenta (ver [por qué](README.md)). Esta ficha se conserva como historial: ningún flujo la usa.
+
 **Etapa:** 3 · Análisis · **Parámetros:** Esfuerzo normal.
 
 La IA propone hipótesis que ayudan a entender el resultado o a desconfiar de él. Las **registra y sella antes** de cualquier prueba.
@@ -24,4 +27,4 @@ La IA propone hipótesis que ayudan a entender el resultado o a desconfiar de é
 ## Prueba sin IA que lo comprueba
 `python herramientas/verificar_hipotesis.py <corrida> --sellar`. Si las hipótesis cambian después de sellarse, el análisis no se acepta.
 
-Además, las [reglas comunes](00-reglas-comunes.md) y la bitácora de su etapa.
+Además, las [reglas comunes](../../agentes/00-reglas-comunes.md) y la bitácora de su etapa.

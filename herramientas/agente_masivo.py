@@ -436,8 +436,9 @@ def main(argv):
     if filas and motor in ("claude", "agy", "codex") and "--solo-validar" not in argv and not (trabajo / "RESUMEN_IA.md").exists():
         ped = (f"Lee las fichas validadas de {fichas} y su RESULTADO.md, y escribe en {trabajo / 'RESUMEN_IA.md'} un resumen de lo que "
                "se desarrolló para que el estudiante haga el análisis: qué conjuntos se encontraron, por qué son relevantes y qué "
-               "preguntas quedan abiertas. Máximo 220 palabras, en español. Sin conclusiones ni recomendaciones (el análisis lo hace el "
-               "estudiante), sin cifras salvo años y normas, sin datos personales. No modifiques nada más.")
+               "preguntas quedan abiertas. Máximo 220 palabras, en español. Sin conclusiones, recomendaciones, causas ni juicios "
+               "(«se concluye», «muestra que», «se recomienda», «hay que», «conviene», «por eso», «se debe a», «sobrecosto»): el "
+               "análisis lo hace el estudiante. Sin cifras salvo años y normas, sin datos personales. No modifiques nada más.")
         cmd = {"claude": [os.environ.get("CLAUDE_BIN", "claude"), "-p", ped, "--dangerously-skip-permissions", "--strict-mcp-config"],
                "agy": [os.environ.get("AGY_BIN", "agy"), "--dangerously-skip-permissions", "-p", ped],
                "codex": [os.environ.get("CODEX_BIN", "codex"), "exec", "--skip-git-repo-check", "--color", "never", "-C", str(trabajo),

@@ -59,3 +59,6 @@ m12_regiones_sin_unificar: 4 falla(s)
   - regla R4 (dominio) no pasa: 15 filas de 6; faltan: ninguna; fuera de la lista: ['ANTIOQUIA', 'BOGOTA DC', 'Bogota D.C.', 'Bogotá', 'CALDAS', 'Valle', 'Valle del cauca', 'risaralda']
   - regla R5 (completitud) no pasa: falta alguna región oficial con valor numérico; fuente 2,344,144,700
   - caso con respuesta conocida no coincide: solo en obtenido: [['ANTIOQUIA'], ['BOGOTA DC'], ['Bogota D.C.'], ['Bogotá'], ['CALDAS']]; Antioquia.ventas_netas: obtenido 700.000 · esperado 2.850.000; Bogotá D.C..ventas_netas: obtenido 0 · esperado 3.650.000; Caldas.ventas_netas: obtenido 650.000 · esperado 1.550.000; Valle del Cauca.ventas_netas: obtenido 0 · esperado 2.300.000; claves repetidas: [['Antioquia']]
+
+m13_lee_oraculo: 1 falla(s)
+  - caso con respuesta conocida no coincide: Bogotá D.C..ventas_netas: obtenido 1.150.000 · esperado 3.650.000; Risaralda.ventas_netas: obtenido 2.500.000 · esperado 0

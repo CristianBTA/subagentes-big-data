@@ -1,0 +1,280 @@
+{
+ "whitepaper": "whitepaper.md",
+ "sha256": "5e9b8915cb392d83c734b39ad04e64ce4e0c1e46cfdd54ea0779b0c39cbdd598",
+ "estado": "aprobado",
+ "chequeos": [
+  {
+   "chequeo": "W1 secciones obligatorias",
+   "ok": true,
+   "detalle": "las 8 secciones, en orden y con contenido"
+  },
+  {
+   "chequeo": "W2 cifras de los artefactos verificados",
+   "ok": true,
+   "detalle": "41 cifra(s), todas en los artefactos verificados · artefactos: informe.json, gobernanza.json, grafico_verificacion.json, datos/procedencia.json, datos/procedencia_contratos.json, limpieza_contratos.json"
+  },
+  {
+   "chequeo": "W3 sin conclusiones, recomendaciones ni causas",
+   "ok": true,
+   "detalle": "describe lo hecho y lo medido; el análisis queda para las personas"
+  },
+  {
+   "chequeo": "W4 preguntas para las personas",
+   "ok": true,
+   "detalle": "6 preguntas, de costo, calidad e impacto"
+  },
+  {
+   "chequeo": "W5 sin instrucciones, datos personales ni texto oculto",
+   "ok": true,
+   "detalle": "ninguno"
+  }
+ ],
+ "cifras": [
+  {
+   "cifra": "49.662",
+   "linea": 15,
+   "seccion": "Datos y procedencia",
+   "respaldada": true
+  },
+  {
+   "cifra": "6",
+   "linea": 16,
+   "seccion": "Datos y procedencia",
+   "respaldada": true
+  },
+  {
+   "cifra": "7",
+   "linea": 17,
+   "seccion": "Datos y procedencia",
+   "respaldada": true
+  },
+  {
+   "cifra": "26",
+   "linea": 18,
+   "seccion": "Datos y procedencia",
+   "respaldada": true
+  },
+  {
+   "cifra": "100.000 millones",
+   "linea": 18,
+   "seccion": "Datos y procedencia",
+   "respaldada": true
+  },
+  {
+   "cifra": "49.662",
+   "linea": 22,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "21",
+   "linea": 22,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "25",
+   "linea": 22,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "48.208",
+   "linea": 24,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "912",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "157.087",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "2.424.798.562",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "609",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "26",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "100.000 millones",
+   "linea": 25,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "49.662",
+   "linea": 26,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "68",
+   "linea": 26,
+   "seccion": "Limpieza",
+   "respaldada": true
+  },
+  {
+   "cifra": "17.248.249.407.618,69",
+   "linea": 31,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "17,2 billones",
+   "linea": 31,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "53",
+   "linea": 31,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "49.662",
+   "linea": 31,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "8",
+   "linea": 36,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "49.662",
+   "linea": 38,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "49.662",
+   "linea": 38,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "0",
+   "linea": 38,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "16 billones",
+   "linea": 40,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "18 billones",
+   "linea": 40,
+   "seccion": "Cifra verificada y cómo se verificó",
+   "respaldada": true
+  },
+  {
+   "cifra": "1",
+   "linea": 44,
+   "seccion": "Gráfico",
+   "respaldada": true
+  },
+  {
+   "cifra": "15",
+   "linea": 44,
+   "seccion": "Gráfico",
+   "respaldada": true
+  },
+  {
+   "cifra": "97,6 %",
+   "linea": 44,
+   "seccion": "Gráfico",
+   "respaldada": true
+  },
+  {
+   "cifra": "12",
+   "linea": 46,
+   "seccion": "Gráfico",
+   "respaldada": true
+  },
+  {
+   "cifra": "95",
+   "linea": 52,
+   "seccion": "Gobernanza",
+   "respaldada": true
+  },
+  {
+   "cifra": "25",
+   "linea": 52,
+   "seccion": "Gobernanza",
+   "respaldada": true
+  },
+  {
+   "cifra": "1",
+   "linea": 52,
+   "seccion": "Gobernanza",
+   "respaldada": true
+  },
+  {
+   "cifra": "26",
+   "linea": 53,
+   "seccion": "Gobernanza",
+   "respaldada": true
+  },
+  {
+   "cifra": "3",
+   "linea": 58,
+   "seccion": "Límites",
+   "respaldada": true
+  },
+  {
+   "cifra": "100.000 millones",
+   "linea": 61,
+   "seccion": "Límites",
+   "respaldada": true
+  },
+  {
+   "cifra": "26",
+   "linea": 68,
+   "seccion": "Preguntas para el análisis de las personas",
+   "respaldada": true
+  },
+  {
+   "cifra": "100.000 millones",
+   "linea": 68,
+   "seccion": "Preguntas para el análisis de las personas",
+   "respaldada": true
+  },
+  {
+   "cifra": "609",
+   "linea": 70,
+   "seccion": "Preguntas para el análisis de las personas",
+   "respaldada": true
+  },
+  {
+   "cifra": "912",
+   "linea": 71,
+   "seccion": "Preguntas para el análisis de las personas",
+   "respaldada": true
+  }
+ ]
+}

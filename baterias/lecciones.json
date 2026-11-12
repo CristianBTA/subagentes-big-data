@@ -1,59 +1,59 @@
 {
-  "_nota": "Cada error real se vuelve una lección con su prueba. Los agentes la leen antes de escribir (control blando) y la prueba la hace cumplir (control duro). Se agrega con: python herramientas/baterias.py --leccion '<texto>' --origen '<de dónde salió>' --prueba '<dónde se prueba>'.",
+  "_nota": "Cada error real se vuelve una lección con su prueba. Los agentes la leen antes de escribir (control blando) y la prueba la hace cumplir (control duro). Se agrega con: python herramientas/baterias.py --leccion '<texto>' --origen '<de dónde salió>' --prueba '<la prueba que lo atrapa>'. La prueba cita algo que existe y la batería lo comprueba: un id del blindaje (B05), un mutante de los controles (M12), un caso de una batería (bateria:failfast/campo_de_mas.csv), una herramienta con --autoprueba (con su caso «…») o un archivo versionado; una cita entre « » tiene que estar en el archivo que la precede (L96).",
   "lecciones": [
     {
       "id": "L01",
       "leccion": "pandas.to_datetime(format='mixed', dayfirst=True) invierte las fechas ISO con día <= 12 (2026-04-05 queda 4 de mayo). Con formatos mezclados se lee cada formato por separado.",
       "origen": "implementación de prueba, 6-nov-2026; la atrapó la regla de conservación",
-      "prueba": "caso conocido con una fecha ISO de día <= 12 y otra dd/mm/aaaa; regla de conservación"
+      "prueba": "herramientas/verificar.py corridas/2026-11-06-ventas-semestre --impl m06_fechas_iso_invertidas=evidencia/sintetico/mutantes/m06_fechas_iso_invertidas.py «format=\"mixed\", dayfirst=True» (fallan R1, la conservación, y el caso conocido, que trae fechas ISO con día <= 12 y otras dd/mm/aaaa) · herramientas/validar_aporte.py (mutantes)"
     },
     {
       "id": "L02",
       "leccion": "Si las fechas traen hora, compararlas contra 'aaaa-mm-dd' como texto deja por fuera el último día (5 contratos y 882 millones en SECOP Medellín 2025).",
       "origen": "SECOP II, 6-nov-2026",
-      "prueba": "perfilar.py marca 'con_hora'; caso conocido con 31-dic a las 23:59"
+      "prueba": "herramientas/perfilar.py «con_hora» · herramientas/verificar.py corridas/2026-11-06-secop-medellin-2025 --impl s_corte_texto_31_dic=evidencia/secop/mutantes/s_corte_texto_31_dic.py (comparar como texto deja fuera 5 contratos y 882 millones: fallan R1, R2, R8 y el caso conocido, con contratos del 31-dic a las 23:59:59; necesita los datos de SECOP)"
     },
     {
       "id": "L03",
       "leccion": "Un nombre de paquete inventado (pandas-secop-tools) lo puede registrar un atacante: solo se importan librerías de permitidas.json, con versiones de requirements.txt.",
       "origen": "curso Big Data con IA, módulo 1 (slopsquatting)",
-      "prueba": "bateria:seguridad/malos/paquete_inventado.py y instala_desde_codigo.py"
+      "prueba": "bateria:seguridad/malos/paquete_inventado.py bateria:seguridad/malos/instala_desde_codigo.py"
     },
     {
       "id": "L04",
       "leccion": "Unir con un maestro que tiene códigos repetidos multiplica filas sin dar error. La conservación se calcula sin unir tablas.",
       "origen": "ejemplo sintético, 6-nov-2026",
-      "prueba": "regla de tipo conservación"
+      "prueba": "herramientas/verificar.py corridas/2026-11-06-ventas-semestre --impl m09_maestro_sin_depurar=evidencia/sintetico/mutantes/m09_maestro_sin_depurar.py (falla R1, la conservación, que se calcula sin unir tablas) · herramientas/validar_aporte.py (mutantes)"
     },
     {
       "id": "L05",
       "leccion": "Un NIT puede agrupar varias unidades que contratan (Concejo y Personería dentro del Distrito; Asamblea dentro del Departamento): «entidad» es una decisión de negocio y se declara.",
       "origen": "SECOP II, 6-nov-2026",
-      "prueba": "perfilar.py: código con varios nombres (nit_entidad → codigo_entidad); pregunta en la spec"
+      "prueba": "herramientas/perfilar.py «codigo_con_varios_valores» (nit_entidad → codigo_entidad) · corridas/2026-11-06-secop-medellin-2025/spec.json, pregunta P1 «¿La Personería y el Concejo de Medellín» · herramientas/verificar.py corridas/2026-11-06-secop-medellin-2025 --impl s_agrupar_por_nombre=evidencia/secop/mutantes/s_agrupar_por_nombre.py (fallan R3, R4, R5, R6, R8 y el caso conocido; necesita los datos de SECOP)"
     },
     {
       "id": "L06",
       "leccion": "«Entidad pública» no garantiza que todo el archivo lo sea: la Universidad Pontificia Bolivariana (privada) publica en SECOP II. Se pregunta, no se supone.",
       "origen": "SECOP II, 6-nov-2026; lo vio un generador de un solo disparo, no la referencia humana",
-      "prueba": "pregunta en la spec"
+      "prueba": "corridas/2026-11-06-secop-medellin-2025/spec.json, pregunta P2 «¿Se excluye la Universidad Pontificia Bolivariana» · herramientas/verificar.py: el informe dice cuántas «pregunta(s) abierta(s)» hay y el valor por defecto de cada una"
     },
     {
       "id": "L07",
       "leccion": "En «contratos» de SECOP también hay operaciones de crédito público (deuda): un billón en el Distrito en 2025. Es una pregunta de negocio.",
       "origen": "SECOP II, 6-nov-2026",
-      "prueba": "pregunta en la spec"
+      "prueba": "corridas/2026-11-06-pipeline-secop-medellin-2025/spec.json, pregunta P3 «¿Las operaciones de crédito público (deuda)» · herramientas/verificar.py corridas/2026-11-06-secop-medellin-2025 --impl s_excluir_credito_publico=evidencia/secop/mutantes/s_excluir_credito_publico.py (excluirlas sin declararlo: fallan R1, R2 y R8; necesita los datos de SECOP)"
     },
     {
       "id": "L08",
       "leccion": "Quitar «duplicados» por (entidad, valor, fecha) borra contratos legítimos (−25.824 en SECOP Medellín 2025). Solo se depura por la llave declarada, y se concilia.",
       "origen": "mutante de SECOP, 6-nov-2026",
-      "prueba": "conciliar(datos) y regla de conservación del número de contratos"
+      "prueba": "herramientas/verificar.py corridas/2026-11-06-secop-medellin-2025 --impl s_sobre_depurar=evidencia/secop/mutantes/s_sobre_depurar.py (falla R2, la conservación del número de contratos: 23.838 de 49.662; necesita los datos de SECOP) · herramientas/blindaje.py --solo B25 (conciliar() contra las filas reales)"
     },
     {
       "id": "L09",
       "leccion": "Las variantes de escritura de una categoría parten los grupos sin dar error. Va una lista cerrada en la spec y una regla de dominio.",
       "origen": "ejemplo sintético, 6-nov-2026",
-      "prueba": "regla de tipo dominio"
+      "prueba": "herramientas/verificar.py corridas/2026-11-06-ventas-semestre --impl m12_regiones_sin_unificar=evidencia/sintetico/mutantes/m12_regiones_sin_unificar.py (falla R4, el dominio con la lista cerrada de la spec) · herramientas/validar_aporte.py (mutantes)"
     },
     {
       "id": "L10",
@@ -83,7 +83,7 @@
       "id": "L14",
       "leccion": "Una regla de limpieza mal planteada (IVA mayor que el subtotal) marcó 1.150 de 1.520 filas en una prueba. El plan de limpieza lo revisa alguien distinto antes de sellarlo, y las reglas calculan desde el dato crudo.",
       "origen": "plan de limpieza de prueba, 6-nov-2026",
-      "prueba": "revisor de la especificación (agentes/04) y reglas sobre el dato crudo"
+      "prueba": "agentes/04-revisor-de-la-especificacion.md «los planes de limpieza con su informe» · herramientas/verificar.py corre las reglas sobre el crudo: «correr_reglas(reglas, spec.get(\"datos_crudos\")»"
     },
     {
       "id": "L15",
@@ -402,6 +402,354 @@
       "leccion": "El filtro de aportes daba «✓ pasa» a un aporte que hacía caer baterias.py o sgsi.py: solo buscaba líneas «✗», y una herramienta que se cae no escribe ninguna. Bastaba una coma de más en baterias/fechas/casos.json o en sgsi/controles.json; fusionado, baterias.py (el segundo comando de «Instalar») dejaba de funcionar en main para todos. Ahora el filtro exige la línea RESUMEN de las baterías y del SGSI, como ya la exigía al banco de blindaje (L43), y una salida con error sin ninguna «✗» también es falla. La falla de un caso nuevo del aporte sigue contando como aviso.",
       "origen": "revisión de la versión de clase (etiqueta clase-2026-11-06 y main 935486d), 6-nov-2026: un JSON con una coma de más salía en verde en el filtro",
       "prueba": "herramientas/blindaje.py B22"
+    },
+    {
+      "id": "L68",
+      "leccion": "El filtro de aportes lo juzgaba el propio aporte: en el pull request corría el validar_aporte.py del commit de fusión, ignoraba el código de salida de git y de sus herramientas y solo contaba las líneas con «✗». Un JSON roto en las baterías, una caja debilitada con una prueba en ERROR o el juez editado daban «✓». El juez y sus herramientas salen de la base, se lee el RESUMEN de cada herramienta y lo que juzga a los aportes (herramientas, flujo, dependencias, GitHub) lo decide el dueño.",
+      "origen": "revisión de gobernanza del filtro de aportes (GOB-1), 6-nov-2026",
+      "prueba": "herramientas/validar_aporte.py --autoprueba"
+    },
+    {
+      "id": "L69",
+      "leccion": "python -c pone la carpeta actual en sys.path: un json.py plantado donde se lanzaba la caja reemplazaba al de la biblioteca estándar dentro del ejecutor. La caja corre con python -P.",
+      "origen": "revisión del filtro de aportes (GOB-1), 6-nov-2026",
+      "prueba": "herramientas/blindaje.py B23"
+    },
+    {
+      "id": "L70",
+      "leccion": "Con CSV locales, la ingesta rellenaba con vacíos los campos que faltaban, descartaba los que sobraban y comparaba el conteo contra sí mismo: «2,1,500» (miles con coma, sin comillas) perdía el 500 y la carga se aprobaba con ✓ en el conteo. La ingesta lee con el mismo lector estricto de las reglas (leer_tabla: rechaza con el número de línea) y el conteo sale aparte: el que declara el contrato o los saltos de línea fuera de comillas.",
+      "origen": "revisión de gobernanza de la ingesta (GOB-3), 6-nov-2026",
+      "prueba": "bateria:failfast/miles_con_coma_sin_comillas.csv"
+    },
+    {
+      "id": "L71",
+      "leccion": "La protección de datos personales dependía de nombres de columna ajustados a SECOP: contratista, nit, nombre, razon_social o mail no se marcaban; etnia y discapacidad entraban sin justificación aunque el código decía que todas la piden, y una corrida que publicaba nombres y NIT de personas salía «aprobado». Ahora se clasifican nombres genéricos y la descripción de los metadatos, lo cuasi pide justificación, lo sensible base legal, y una clave que identifica a personas da «revisar».",
+      "origen": "revisión de gobernanza de datos personales (GOB-5), 6-nov-2026",
+      "prueba": "bateria:privacidad/columnas_secop.json"
+    },
+    {
+      "id": "L72",
+      "leccion": "El filtro de aportes solo miraba los .csv dentro de una carpeta datos/: el extracto completo de SECOP entraba como .tsv (5,5 MB) o .json (11,8 MB), un caso conocido con 1.500 filas reales pasaba, y una tabla de personas sin «señor» ni «C.C.» delante no se veía. El filtro detecta tablas por su contenido, pone topes de bytes, filas y ids de SECOP, y en toda tabla las columnas de personas solo aceptan valores con la forma ficticia de la guía.",
+      "origen": "revisión de gobernanza del filtro de aportes (GOB-6), 6-nov-2026",
+      "prueba": "herramientas/validar_aporte.py --autoprueba"
+    },
+    {
+      "id": "L73",
+      "leccion": "La procedencia guardaba como «origen» una URL sin $order ni $limit: pedida otra vez, la API devolvía 1.000 filas en otro orden frente a las 49.662 ingeridas, y la huella no se podía reproducir. Tampoco guardaba la versión de la fuente ni la zona horaria, y no se publicaba. Ahora guarda la consulta exacta (select, where, order, páginas), una URL que la reproduce, rowsUpdatedAt y viewLastModified, la hora con zona, y procedencia_<tabla>.json se publica (no trae filas).",
+      "origen": "revisión de gobernanza de la procedencia (GOB-2), 6-nov-2026",
+      "prueba": "herramientas/ingesta.py --autoprueba"
+    },
+    {
+      "id": "L74",
+      "leccion": "Con dos tablas en la misma carpeta, cada carga reescribía procedencia.json: quedaba la de la última, y el informe declaraba la ingesta aprobada aunque la otra tabla se hubiera rechazado. Además, el CSV se escribía antes de probarlo, así que la tabla rechazada quedaba donde la leen las etapas siguientes. Ahora hay una procedencia por tabla, el CSV se escribe solo si la carga se aprueba, la etapa es ✅ solo si todas lo están y verificar.py compara la huella del crudo con la de su procedencia.",
+      "origen": "revisión de gobernanza con varias tablas (GOB-7), 6-nov-2026",
+      "prueba": "herramientas/ingesta.py --autoprueba"
+    },
+    {
+      "id": "L75",
+      "leccion": "Un umbral relativo pensado para el caso conocido de 23 filas (completitud 0,95) dejaba perder 1.987 contratos y 755.594.668.590,87 pesos en el dato real de 49.662 filas sin que nada fallara. Los umbrales se justifican sobre el dato real: van en conteos absolutos (vacios_maximo) o en umbrales_caso aparte, que solo se aplican al caso conocido y nunca exigen más que los del dato real; el detalle de cada umbral muestra la holgura.",
+      "origen": "revisión ciega del pipeline (PIP-5, motor de la limpieza), 6-nov-2026",
+      "prueba": "herramientas/limpieza.py --autoprueba"
+    },
+    {
+      "id": "L76",
+      "leccion": "Un umbral mal escrito (completitud_minimo, o una columna o una marca que no existen) se ignoraba: el plan parecía exigir algo que nadie medía. Ahora detiene la limpieza. Además, la validez se mide antes y después con el mismo tipo, y 2025-02-30 ya no cuenta como fecha válida.",
+      "origen": "revisión ciega del pipeline (PIP-5, motor de la limpieza), 6-nov-2026",
+      "prueba": "herramientas/limpieza.py --autoprueba"
+    },
+    {
+      "id": "L77",
+      "leccion": "Al reescribir limpieza.py, los separadores U+2028 y U+2029 escritos como caracteres literales dentro de la expresión de invisibles se volvieron espacios, y la op texto pegaba los nombres. Solo lo atrapó comparar la capa limpia byte a byte con la versión anterior. Los caracteres invisibles van siempre como escapes \\uXXXX, nunca literales (los controles bidi literales son además un riesgo de Trojan Source). La limpieza lee con el mismo lector estricto que las reglas y la ingesta, y los ejemplos de un dato sensible salen enmascarados.",
+      "origen": "integración de la limpieza (PIP-4 y PIP-5) con el lector común de GOB-3, 6-nov-2026",
+      "prueba": "herramientas/limpieza.py --autoprueba"
+    },
+    {
+      "id": "L78",
+      "leccion": "La ingesta de CSV locales leía con read_text, que cambiaba en silencio un \\r\\n dentro de un campo entre comillas; un archivo que no estaba en UTF-8 reventaba con traceback, uno con caracteres nulos o solo con el encabezado se aprobaba, y una comilla sin cerrar se reportaba en la última línea del archivo. Ahora lee los bytes con el lector estricto común y rechaza con la línea (la de la comilla, donde se abre), cuenta los registros por otro camino que el lector y también contra fuente.conteo, y lo que escribe debe pasar reglas_base.leer_csv. Un contrato roto se rechaza con su motivo, y una tabla con «../» en el nombre ya no retira (borra) ni escribe archivos fuera de --salida.",
+      "origen": "revisión ciega del pipeline (PIP-4), integrada con GOB-3 y GOB-7, 6-nov-2026",
+      "prueba": "herramientas/ingesta.py --autoprueba bateria:failfast/campo_de_menos.csv"
+    },
+    {
+      "id": "L79",
+      "leccion": "En SECOP II Procesos (nivel 3), un proceso se repite por cada adjudicación: en un solo día de Antioquia, «Licitación pública» trae 12 filas y 2 procesos. El modo de agregados calcula la consulta en el servidor, exige count(*) y la concilia contra el count(*) sin agrupar, antes y después de descargar; sum y count se concilian igual y min y max coinciden. La llave puede ser compuesta (la combinación no se repite y ninguna parte viene vacía), y un dato sensible pide su base legal aunque la consulta solo lo cuente.",
+      "origen": "revisión ciega del pipeline (PIP-4, llaves compuestas y agregados del servidor), 6-nov-2026",
+      "prueba": "herramientas/ingesta.py --autoprueba"
+    },
+    {
+      "id": "L80",
+      "leccion": "Un HTTP 400 (una consulta mal escrita) se reintentaba tres veces con esperas y terminaba en traceback, gastando cupo de la API. Un error de la consulta no se arregla repitiéndola: se rechaza a la primera con el mensaje del servidor, y solo se reintentan 429, 5xx y la red.",
+      "origen": "revisión ciega del pipeline (PIP-4), 6-nov-2026",
+      "prueba": "herramientas/ingesta.py --autoprueba"
+    },
+    {
+      "id": "L81",
+      "leccion": "El código bajo prueba tenía el oráculo al alcance: la caja le dejaba leer la carpeta de sus datos, y una mutante que leía el esperado.json del caso conocido pasaba «sin fallas». La línea «No puede leer» de la ficha es una instrucción, no un control. Ahora corre sobre copias de su código y de sus tablas, en una carpeta temporal nueva, con la caja aislada: sin repositorio, sin carpetas temporales y sin ningún archivo con nombre de oráculo, de criterio o de otra implementación.",
+      "origen": "revisión ciega de seguridad (SEG-4), 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B00,B24"
+    },
+    {
+      "id": "L82",
+      "leccion": "Una conciliación vale si la ancla el verificador, no si la declara el código: una corrida de 30 filas salía aprobada con «Filas leídas: 1.000», porque 1.000 = 1.000 + 0 cerraba, y «la conciliación de B es distinta» no cambiaba el estado. Ahora las filas leídas se comparan con las filas reales del archivo (y con las de la procedencia), en los datos reales y en el caso conocido; A y B deben coincidir motivo por motivo, hace falta al menos una regla de conservación (D9) y no hay conteos negativos.",
+      "origen": "revisión ciega del pipeline (PIP-3), 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B25"
+    },
+    {
+      "id": "L83",
+      "leccion": "Sanear por comillas no basta: «valor no numérico en fila 7: Ficticio Inventado 99887766» llegaba tal cual al informe, porque el texto de la celda viene sin comillas. Los mensajes de error de las implementaciones y de las reglas tapan ahora las cifras de 5 o más dígitos y toda palabra que aparezca en una celda de la entrada.",
+      "origen": "revisión ciega de seguridad (SEG-3, parte del saneado), 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B26"
+    },
+    {
+      "id": "L84",
+      "leccion": "Chrome, al imprimir un HTML a PDF, escribe cada enlace relativo como file:///ruta/local/completa: el PDF que se comparte filtra la carpeta y el nombre de usuario de quien lo imprimió, aunque el HTML no los traiga. El whitepaper en tres hojas carta no lleva enlaces (el destino queda como texto inerte, en gris) y, antes de darlo por bueno, carta.enlaces() revisa que el PDF no traiga ningún /URI ni file://.",
+      "origen": "whitepaper del pipeline en tres hojas carta, 6-nov-2026: un HTML con dos enlaces relativos, impreso con Chrome sin ventana, dejó las dos rutas locales completas en el PDF",
+      "prueba": "herramientas/whitepaper_corrida.py --autoprueba (enlaces sin <a>, sin href ni src) y la revisión del PDF en whitepaper_corrida.py"
+    },
+    {
+      "id": "L85",
+      "leccion": "El presentador también obedece D15: hasta el 6-nov su primera lámina daba «la conclusión y lo que se pide decidir», escribía «hallazgos» y una «recomendación accionable» (qué, quién, próximo paso, cómo se mide) y mostraba veredictos de las hipótesis de la IA, mientras validar_whitepaper.py ya le prohibía eso al documentador: una regla nueva cambió un agente y el otro siguió exigiendo lo contrario. Ahora los títulos dicen lo medido con su cifra (sin causas ni consecuencias), la recomendación se cambió por preguntas de costo, calidad e impacto para las personas, verificar_presentacion.py aplica a todos los textos la misma lista W3 del whitepaper (importada, no copiada) y un campo de la forma anterior (recomendacion, decision, scqa, hallazgos) hace fallar la forma en vez de ignorarse. Cuando cambia una regla, se buscan en todas las fichas y verificadores los textos que la contradicen.",
+      "origen": "alineación del presentador con D15 (decisión del dueño), 6-nov-2026",
+      "prueba": "herramientas/verificar_presentacion.py --autoprueba"
+    },
+    {
+      "id": "L86",
+      "leccion": "La lista de rutas que un aporte no puede tocar sin el dueño (rutas_protegidas.py, el chequeo que en GitHub corre desde main) se había quedado atrás de la del filtro: faltaban seguridad_cwe.py y comprobar.py, que el filtro importa; rutas.py, que importa gobernanza; el gancho de la compuerta, permitidas_usuario.json, requirements-compuerta.txt y .githooks/. Un tercero podía cambiarlos sin que ese chequeo lo frenara. Ahora están, y la autoprueba calcula con ast todo lo que importa el filtro, directo o indirecto, y lee su lista: si algo queda fuera, falla (con control positivo: con la lista de antes, encuentra lo que faltaba). Dos listas que deben decir lo mismo se comprueban entre sí, no a ojo.",
+      "origen": "revisión de la versión final: huecos señalados al integrar el filtro de aportes (GOB-1), 6-nov-2026",
+      "prueba": "herramientas/rutas_protegidas.py --autoprueba"
+    },
+    {
+      "id": "L87",
+      "leccion": "gobernanza.py barría el informe, el resultado, el gráfico y la presentación en HTML, pero no el whitepaper (whitepaper.md), su versión impresa (WHITEPAPER.html) ni presentacion.json: gobernanza.json decía «aprobado» sobre salidas que no había mirado, y su protección dependía de que validar_whitepaper.py (W5) y verificar_presentacion.py se hubieran corrido. Ahora barre las diez salidas con las mismas reglas (datos personales y textos con forma de instrucción), lee de un JSON solo sus cadenas y de un HTML el texto con las entidades resueltas (un «&#64;» no esconde un correo). Cuando el pipeline publica una salida nueva, entra también en el barrido de gobernanza.",
+      "origen": "revisión de la versión final: huecos señalados al integrar el whitepaper en hojas carta y el presentador con D15, 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B27"
+    },
+    {
+      "id": "L88",
+      "leccion": "La auditoría de independencia sobre las transcripciones reales conocía siete roles (generadores, reparadores, probador, revisor de seguridad y custodio) y no al documentador ni al presentador, que entraron después: un documentador que abriera impl_a.py o un presentador que leyera hipotesis_resultado.json no se contaba ni como agente auditado. Ahora los dos están, con lo que prohíben sus fichas (datos crudos, capa limpia, el código y las bitácoras de los demás y, para el presentador, las hipótesis de la IA, que son historial), y una autoprueba con transcripciones ficticias muestra que lo permitido no se marca y lo prohibido sí; con la tabla de antes, nada se auditaba. Un rol nuevo en el flujo entra el mismo día en la auditoría.",
+      "origen": "revisión de la versión final: huecos señalados al integrar el documentador (D15) y el presentador con D15, 6-nov-2026",
+      "prueba": "evidencia/blindaje/auditar_independencia.py --autoprueba"
+    },
+    {
+      "id": "L89",
+      "leccion": "Que la caja aislada resista un ataque escrito para el banco de blindaje (B24) no basta: el criterio de independencia se exige siempre con una mutante del banco sintético. m13_lee_oraculo es la m07 que devuelve el esperado.json si lo encuentra junto a sus datos, con la ruta armada como texto (split y join), que ninguna compuerta estática puede cerrar del todo. Con el verificador de antes salía «sin fallas»; con la caja aislada corre sobre una copia de sus tablas, no ve el oráculo y el caso conocido la atrapa. El filtro de aportes y la efectividad del SGSI (la vigilancia diaria de main) corren todas las mutantes del banco y exigen que solo m00 salga sin fallas: si la caja se afloja, m13 sale «sin fallas» y los dos lo marcan.",
+      "origen": "revisión ciega de seguridad (SEG-4): la mutante del revisor quedó fuera del banco al integrar la caja aislada, 6-nov-2026",
+      "prueba": "bateria:evidencia/sintetico/mutantes/m13_lee_oraculo.py · herramientas/verificar.py corridas/2026-11-06-ventas-semestre --impl m13_lee_oraculo=evidencia/sintetico/mutantes/m13_lee_oraculo.py (1 falla) · herramientas/validar_aporte.py (mutantes)"
+    },
+    {
+      "id": "L90",
+      "leccion": "La compuerta del perfil pura revisaba las llamadas por su nombre y no conocía el recorrido de carpetas: os.listdir, scandir, walk, glob y Path.iterdir, glob, rglob y walk pasaban, y también os.path.dirname y with_name (subir o ir al archivo vecino, como .parent, que sí se bloqueaba), lo que se usa sin llamar (f = os.listdir, g = getattr, e = eval, __builtins__ con subíndice), getattr con el nombre en texto («iterdir», «to_csv»), from-import con otro nombre, import *, posix (os por debajo), los módulos internos (FileFinder lista la carpeta para su caché) y lo que vuelve texto una llamada (string.Formatter.get_field, anotaciones en texto que evalúan typing.get_type_hints y functools.singledispatch, pkgutil.resolve_name, logging.config). Así, una regla o una implementación escrita por la IA podía buscar el esperado.json junto a sus datos. Ahora el perfil pura los bloquea por el nombre, sobre cualquier objeto y se llamen o no; el perfil de usuario sigue pudiendo listar sus CSV. B28 ataca con 29 variantes que, sin la compuerta, llegan al oráculo en la caja sin aislar (donde corren las reglas); con la compuerta de antes pasaban las 29. Una lista de nombres no cierra todo (una ruta armada como texto pasa): quien impide leer el oráculo sigue siendo la caja aislada (B24, L89).",
+      "origen": "revisión ciega de seguridad (SEG-4, arreglo 3): la compuerta no bloqueaba listar ni recorrer carpetas, 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B28 · bateria:seguridad/malos/lista_os_listdir.py · bateria:seguridad/malos/lista_formatter_get_field.py · bateria:seguridad/malos/navega_dirname.py · bateria:seguridad/buenos_usuario/ok_lista_csv_de_su_carpeta.py"
+    },
+    {
+      "id": "L91",
+      "leccion": "La caja aislada protegía solo a las implementaciones bajo prueba: el código del gráfico y el de las hipótesis, que también escribe la IA (o una persona con ayuda de una IA), corrían en la caja sin aislar, que deja leer el repositorio y las carpetas temporales. Un grafico.py que armaba como texto la ruta de su corrida, desde el «archivo» de la procedencia, pasaba la compuerta, leía el esperado.json del caso conocido y los datos de otra corrida y los publicaba en la figura; un hipotesis.py igual leía el hipotesis.json sellado, devolvía su umbral y la hipótesis «se sostenía». Ahora los dos pasan por la misma compuerta que reglas.py y las implementaciones (verificar.compuertas) y corren en la misma caja aislada, sobre una copia de su código, con la corrida y las carpetas de los datos negadas: el gráfico no necesita ningún archivo (el resultado y la procedencia le llegan como texto) y las hipótesis reciben copias de sus tablas y de reglas_base.py. verificar_hipotesis.py quedó para las personas, pero también aplica: su hipotesis.py puede escribirlo una IA, el de las corridas anteriores lo escribió la IA, y el registro previo solo vale si la consulta no puede leer el umbral que tiene que alcanzar. Las corridas versionadas dan la misma figura y los mismos veredictos.",
+      "origen": "revisión ciega de seguridad (SEG-4, pendiente d): verificar_grafico.py y verificar_hipotesis.py corrían el código sin aislar, 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B29 · herramientas/verificar_grafico.py y herramientas/verificar_hipotesis.py sobre una copia de cada corrida versionada (misma figura y mismos veredictos)"
+    },
+    {
+      "id": "L92",
+      "leccion": "Un control sin una prueba que se ponga roja al quitarlo no se distingue de uno que no existe. La revisión ciega quitó en una copia las compuertas de reglas.py, la comprobación de valores finitos y el saneado de los mensajes, y las baterías, el blindaje y la corrida seguían en verde: B15 y B28 atacan la compuerta por dentro (seguridad.revisar), no que cargar_reglas la aplique; y un infinito pasa la concordancia (inf menos inf no es mayor que la tolerancia) y una conservación que no mira esa columna. B30 ataca de punta a punta, por una corrida sellada: una reglas.py que, sin la compuerta, lista la carpeta de sus datos y publica en su mensaje un archivo que no recibió. B31 pone seis venenos en una columna que las reglas no miran (inf, -inf, «NaN» y «1e400» en texto, un entero de 400 cifras y una suma que desborda) y tres en las cifras de la presentación, uno por capa: un «NaN» en texto que max() se traga, dos saldos finitos cuya diferencia desborda y un Infinity en informe.json que la tabla mostraría. Si hay capas redundantes, cada una necesita un ataque que solo ella detiene; si no, quitarla no cambia nada y ninguna prueba lo ve. herramientas/mutar_controles.py quita cada control en una copia (siete mutantes, también los dos del saneado que cubre B26) y exige que su prueba ceda por el ataque, no por un error ni por «prueba inválida»; sin mutar, las mismas pruebas resisten.",
+      "origen": "revisión ciega de seguridad (SEG-3): tres controles que se contaban como cobertura sobrevivían a la mutación, 6-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B30,B31 · herramientas/mutar_controles.py (7 de 7 mutantes mueren; sin mutar, B26, B30 y B31 resisten)"
+    },
+    {
+      "id": "L93",
+      "leccion": "Un lector que escribe o describe los datos del pipeline y que ninguna batería ejercita puede aflojarse sin que nada se ponga rojo. La batería FAILFAST probaba leer_csv, recorrer_csv y la ingesta local; el perfil leía con csv.DictReader, que rellena la fila corta con vacíos y guarda aparte los campos de más, así que 8 de los 9 CSV de baterias/failfast se perfilaban sin aviso (la comilla sin cerrar salía como traceback), y lo que el especificador leía no era la tabla del archivo. La limpieza y los casos propios de la ingesta (UTF-8, carácter nulo, solo el encabezado, la línea donde se abre una comilla) solo los probaban sus autopruebas, que ninguna batería corría. Ahora el perfil lee con el lector estricto común (reglas_base.leer_tabla, el de la ingesta, con su UTF-8 y su carácter nulo) y sale con 1 diciendo la línea, sin traceback, y en su perfil.json deja el motivo de la detención en vez del perfil de antes; la batería FAILFAST lo ejercita (en el proceso y por la línea de comandos) y corre las autopruebas de la ingesta y de la limpieza con un piso de casos, porque una autoprueba que pierde casos también es una regresión. B33 afloja cada lector en una copia (la ingesta que lee otra codificación sin avisar, y la ingesta, la limpieza y el perfil que rellenan la fila corta y recortan la larga): con la batería de antes, 3 de los 4 pasaban en ✓; ahora los 4 la hacen caer, y con ella baterias.py y el filtro de aportes. coma_sin_comillas.csv («2,Medellin, Antioquia,200») pasa de la autoprueba a la batería, para todos los lectores.",
+      "origen": "revisión ciega del pipeline (PIP-4, lo que quedó fuera: perfilar.py y baterias.py no eran del arreglo de la ingesta), 6-nov-2026",
+      "prueba": "bateria:failfast/coma_sin_comillas.csv · herramientas/blindaje.py --solo B33 · herramientas/mutar_controles.py --solo M12"
+    },
+    {
+      "id": "L94",
+      "leccion": "El perfil escondía los valores de las columnas personales y de texto libre, pero no los de un dato sensible (Ley 1581 de 2012, art. 5 y 7): gobernanza lo clasifica como cuasi y la limpieza ya enmascaraba sus ejemplos, mientras el perfil le mostraba a la IA las etnias, las discapacidades y los diagnósticos con su conteo. Tampoco escondía, en una columna privada, el mínimo y el máximo (la cédula más baja y la más alta) ni el rango de fechas, y los ejemplos que no cruzan entre dos tablas solo se omitían en las columnas personales: el texto libre salía entero, con la cédula y el correo que trajera. Ahora el perfil trata el dato sensible como privado (más estricto que enmascarar: un valor categórico enmascarado se adivina, «Pos•••••»), omite el mínimo, el máximo, la suma y el rango de fechas de toda columna privada, omite los ejemplos que no cruzan de toda columna privada en cualquiera de las dos tablas y enmascara los valores de un mensaje de detención como la ingesta y la limpieza. Las cuatro corridas versionadas dan el mismo perfil que antes, byte a byte. B32 lo ataca con las mismas tablas dos veces: con nombres neutros el perfil muestra los 13 valores (control positivo) y con los nombres que los marcan no sale ninguno; con el perfil de antes salían los 13. La batería de privacidad perfila ahora dos tablas (con_datos_sensibles.csv comparte columnas con la otra, así que hay cruces), mira también el perfil.json y exige que el perfil corra: un perfil que se cae no filtra nada.",
+      "origen": "revisión ciega de gobernanza (GOB-5) llevada al perfil, que la integración dejó fuera, 6-nov-2026",
+      "prueba": "bateria:privacidad/con_datos_sensibles.csv · herramientas/blindaje.py --solo B32 · herramientas/mutar_controles.py --solo M08,M09,M10,M11"
+    },
+    {
+      "id": "L95",
+      "leccion": "La ficha de un subagente y su instrucción en flujo.js se quedan atrás sin que nada se ponga rojo cuando el motor que lo comprueba gana una opción o una protección. Tras PIP-4 y PIP-5, la ficha del lector no nombraba el modo de agregados del servidor, k_minimo ni el conteo aparte, y su instrucción no nombraba personales_justificadas ni base_legal_sensibles; la ficha del limpiador no nombraba vacios_maximo, umbrales_caso, la holgura ni el umbral mal escrito que detiene, y su instrucción traía la lista vieja de umbrales, sin vacios_maximo: una IA nueva escribiría el contrato o el plan con lo de antes. Tampoco se decía que verificar.py limpia el caso conocido con los umbrales del dato real: umbrales_caso solo se aplica si quien llama lo pide, y verificar.py no lo pide (L75 dice que «solo se aplican al caso conocido»). Ahora las dos fichas y D5, D6, DL3 y DL6 dicen lo que hace el código, la instrucción de cada uno manda a su ficha, y B34 saca del código de ingesta.py y limpieza.py lo que admiten (tipos y claves del contrato y del agregado, claves de la fuente, claves del plan, operaciones y umbrales) y exige que la ficha y la instrucción lo nombren: con la documentación de antes faltaban 42 (19 del lector y 23 del limpiador), y con una opción nueva en cada motor la prueba la echa de menos.",
+      "origen": "documentación del motor de la ingesta y la limpieza (PIP-4, PIP-5) en las fichas del lector y del limpiador, que la integración dejó fuera, 7-nov-2026",
+      "prueba": "herramientas/blindaje.py --solo B34"
+    },
+    {
+      "id": "L96",
+      "leccion": "Una lección que cita una prueba que no existe no la hace cumplir nadie. La batería de lecciones solo miraba los «bateria:…»: «pregunta en la spec», «regla de tipo dominio», «agentes/04» o un B99 pasaban, y 8 de 95 lecciones citaban texto libre o un archivo que no existía, aunque la prueba real sí estaba (las mutantes m06, m09 y m12 del banco sintético, las de SECOP, B25). Ahora cada lección cita algo que se comprueba (un id del blindaje, un mutante de los controles, un caso de una batería, una herramienta con su autoprueba o un archivo versionado), cada cita textual tiene que estar en su archivo, y una cita rota es falla también en un aporte.",
+      "origen": "revisión de las baterías de la versión final, 7-nov-2026: bateria_lecciones aceptaba cualquier texto como prueba",
+      "prueba": "herramientas/baterias.py «def bateria_lecciones» · bateria:citas/casos.json (las citas buenas pasan y cada mala falla justo por lo que ataca)"
+    },
+    {
+      "id": "L97",
+      "leccion": "Una regla que se comprueba en unas salidas y no en otras se salta por la que no la comprueba. D15 tenía barrera en el whitepaper (W3) y en la presentación, pero no en el gráfico: un título «Valor contratado en 2025 por entidad con sede en Medellín: se concluye que hay sobrecosto, se recomienda auditar» aprobaba verificar_grafico.py y llegaba a la lámina de la medición 1, porque la presentación muestra grafico.html en un iframe y solo mira que esté aprobado. Ahora el verificador del gráfico busca las mismas listas en todo el texto de la figura (título, subtítulo, ejes, leyenda, anotaciones, nombres, plantillas del texto y del hover, etiquetas y customdata, también los de la plantilla) sobre lo que se ve: sin etiquetas HTML, porque Plotly muestra «sobre<b>costo</b>» como una palabra. Un texto de una lista de valores que repite una frase de los datos (una entidad «… contra la corrupción») es un dato y no cuenta; un texto suelto, como el título, cuenta siempre.",
+      "origen": "verificación de D15 en las salidas de la versión final (graficador), 7-nov-2026: el título del gráfico con una conclusión y una recomendación aprobaba",
+      "prueba": "bateria:grafico/malos/titulo-con-conclusion.json · bateria:grafico/malos/causa-en-el-subtitulo.json · bateria:grafico/malos/juicio-en-una-anotacion.json · bateria:grafico/buenos/categoria-de-los-datos.json · herramientas/verificar_grafico.py «def comprobar_sin_analisis»"
+    },
+    {
+      "id": "L98",
+      "leccion": "Varias listas de lo mismo se separan: cada verificador agrega lo suyo y ninguno tiene todo. La lista W3 del whitepaper no traía la de la presentación («**Recomendación.** Auditar los contratos de mayor valor.», «Por eso…» y «El próximo paso es…» aprobaban el whitepaper y fallaban la presentación); el resumen del agente masivo, que entra al whitepaper del estudiante, usaba la lista de las fichas, sin ninguna recomendación («Se recomienda cruzar…», «Hay que auditar…», «Por lo tanto…» pasaban); y las dos perdían variantes de lo que decían conocer: «se debe al» (la frontera de palabra rechazaba «al»), «por tanto», «se puede concluir», «la causa principal es», «debe auditarse», «esto muestra que», «se explica por», «lo prudente sería», «se aconseja» e «irregulares». Ahora hay una sola lista (ANALISIS, en validar_whitepaper.py) que importan el whitepaper, la presentación, el gráfico, las fichas y el resumen, y una sola lista de frases de prueba (FRASES_D15) que corren las tres autopruebas. En los textos de método de una ficha solo cuentan las conclusiones, causas y juicios (JUICIO): «hay que unificar los nombres antes de comparar» es método. La lista también atrapa la frase negada: el whitepaper de la corrida completa decía «No trae conclusiones ni recomendaciones» y se quitó «ni recomendaciones». Sigue siendo una lista: una frase de análisis con otras palabras pasa, y la revisa una persona.",
+      "origen": "verificación de D15 en las salidas de la versión final (listas del whitepaper, la presentación y el agente masivo), 7-nov-2026: frases de recomendación y de causa aprobaban en unos verificadores y fallaban en otros",
+      "prueba": "herramientas/validar_whitepaper.py --autoprueba «for frase in FRASES_D15» · herramientas/verificar_presentacion.py --autoprueba «D15 en una nota» · herramientas/validar_ficha.py --autoprueba «D15 en por_que_importa» «from whitepaper_fichas import comprobar_resumen» · herramientas/validar_whitepaper.py «FRASES_D15 = (»"
+    },
+    {
+      "id": "L99",
+      "leccion": "Una lista de rutas protegidas que compara la ruta tal cual se salta con otra grafía. En el disco de macOS, el del dueño y el del runner del filtro, «.Githooks/pre-commit» es «.githooks/pre-commit» y «Flujo.js» es «flujo.js»: un fork los arma con git update-index, el juez y el chequeo de rutas protegidas los daban por rutas nuevas y normales, y al hacer pull el dueño recibía el gancho del aporte, que corría en su siguiente commit. Con «agentes/00-Reglas-comunes.md», además, el juez leía del disco la ficha de la base y no la del aporte, que traía una orden a los agentes. Ahora las dos listas se comparan con la clave de la ruta (sin mayúsculas, con los acentos en NFC y sin los invisibles que ignora HFS+), y una ruta del aporte que en ese disco cae sobre otra escrita distinto bloquea en el chequeo de main y es falla en el juez, sin leer su contenido. Lo que solo iguala Windows (nombres cortos 8.3, el punto final) no se compara.",
+      "origen": "verificación del filtro de aportes de la versión final, 7-nov-2026: «.Githooks/pre-commit», «Flujo.js» y «agentes/00-Reglas-comunes.md» pasaban el juez y el chequeo de rutas protegidas, y en el clon del dueño reemplazaban al gancho, al flujo y a la ficha",
+      "prueba": "B35 · M13 · M14 · M15 · M16 · herramientas/rutas_protegidas.py --autoprueba «el gancho de git con otra mayúscula» · herramientas/validar_aporte.py --autoprueba «rutas_que_chocan»"
+    },
+    {
+      "id": "L100",
+      "leccion": "Una compuerta que solo revisa Python deja pasar todo lo demás que se ejecuta. orquestar.mjs, que el dueño corre para lanzar agy y Codex sin pedir permisos, no estaba entre lo que el juez reserva al dueño: un aporte que le agregaba un execSync al cargarse, junto con un clase/preparar.sh nuevo, pasaba en verde. Ahora orquestar.mjs es de lo que decide el dueño, y todo archivo nuevo o cambiado que corre fuera de Python queda como «requiere decisión del dueño»: un script (.sh, .js, .mjs, .ts, .ps1, .bat, un Makefile…), un archivo con permiso de ejecución o que empieza con «#!», y una página con <script>, on…= o javascript: en un atributo. El gráfico de una corrida trae el paquete de Plotly y tiene su verificador; un informe que solo nombra «javascript:» en su texto no cuenta.",
+      "origen": "verificación del filtro de aportes de la versión final, 7-nov-2026: orquestar.mjs con execSync y un clase/preparar.sh nuevo pasaban el juez y el chequeo de rutas protegidas",
+      "prueba": "B36 · M17 · M18 · herramientas/validar_aporte.py --autoprueba «orquestar_y_scripts»"
+    },
+    {
+      "id": "L101",
+      "leccion": "Una regla que solo se escribe no se cumple: CT24 decía que las baterías solo crecen, pero el filtro de aportes solo avisaba al borrar un archivo de baterias/ y no miraba lo demás. Un aporte que borraba dos muestras de código malo, dejaba 2 de las 10 líneas de los textos maliciosos, quitaba un caso de las fechas, borraba las mutantes del banco sintético o hacía que las 7 reglas de la corrida de referencia aprobaran siempre y la volvía a sellar pasaba en verde: las mutantes y la corrida con que se medía el criterio salían del propio aporte, y el aviso de las inyecciones hasta decía que el archivo «conserva» lo que tenía. Ahora el juez compara cada archivo de baterias/ y de las mutantes con el de la base (un JSON por su estructura: agregar casos pasa y quitar uno o cambiar lo esperado no; otro texto, por sus líneas), toma de la base la corrida de referencia y las mutantes, corre además las nuevas del aporte, y lo sellado de una corrida (sus sellos, lo que nombran, reglas.py, spec.json, hipotesis.json y caso_conocido/) queda como «requiere decisión del dueño».",
+      "origen": "verificación del filtro de aportes de la versión final, 7-nov-2026: borrar muestras, líneas, casos o mutantes y volver a sellar un criterio débil pasaban el juez y el chequeo de rutas protegidas",
+      "prueba": "B37 · M19 · M20 · M21 · M22 · herramientas/validar_aporte.py --autoprueba «lo_que_solo_crece_debil» «lo_que_solo_crece_bien»"
+    },
+    {
+      "id": "L102",
+      "leccion": "Un veredicto que corre en el mismo proceso que el código que juzga lo puede escribir ese código. Si un aporte cambia herramientas/, el banco de blindaje de la base importa esas herramientas en su propio proceso, y el juez corría además el baterias.py del aporte tal cual. Un limpieza.py que dejaba de neutralizar las fórmulas hacía ceder B03; con un atexit que, solo dentro de blindaje.py, imprimía un RESUMEN con «ceden: []» y salía con 0, la falla desaparecía y quedaba solo «requiere decisión del dueño», porque el juez leía la última línea RESUMEN. Ahora cada herramienta debe dejar una sola línea RESUMEN, la salida del banco tiene que cuadrar (una línea por cada prueba de la base y el RESUMEN igual a lo marcado), lo que cede en las líneas o en el RESUMEN es falla, y el baterias.py del aporte no se corre: corren las baterías de la base con sus herramientas. Sigue siendo un límite: un código que reescribe toda la salida de forma coherente no se detecta, así que que resista no prueba nada y el dueño revisa el cambio; cerrarlo pide correr cada herramienta del aporte en un proceso aparte, sin importarla en el que da el veredicto.",
+      "origen": "verificación del filtro de aportes de la versión final, 7-nov-2026: un limpieza.py debilitado con un RESUMEN falso al salir escondía la falla de B03 en el juez",
+      "prueba": "B38 · M23 · M24 · herramientas/validar_aporte.py --autoprueba «resumen_falso_del_banco»"
+    },
+    {
+      "id": "L103",
+      "leccion": "Un contrato mal escrito se rechaza con su motivo; no se cae. La ingesta revisaba la llave y los tipos, pero no la forma de dominios, rangos y avisos: un rango con textos ([\"0\", \"1000\"]), de un solo lado ([0]), con fechas dd/mm/aaaa o escrito como lista, o un dominio que no es una lista, salían como traceback al probar la carga, y ese traceback dejaba en --salida el CSV de la carga anterior con su procedencia «aprobada»: la llave repetida de la carga nueva nunca se reportó. Otros pasaban callados: un aviso con NaN, un aviso de una columna no declarada o un rango sobre una columna de texto. Ahora la forma se revisa antes de leer nada (dominios: valores escritos como texto; rangos y avisos: [mín, máx] con números finitos o fechas aaaa-mm-dd, o null, y el mínimo no mayor que el máximo), y un error que no se previó al probar o escribir la carga la rechaza: retira el CSV anterior y deja la procedencia en «rechazada», con el tipo y el lugar del error y sin su texto, que puede traer un valor de la fuente.",
+      "origen": "verificación de la ingesta de la versión final, 7-nov-2026: un contrato con el rango [\"0\", \"1000\"] y una llave repetida daban un traceback y dejaban la carga anterior en «aprobada»",
+      "prueba": "herramientas/ingesta.py --autoprueba «un rango con textos tras una carga aprobada» «un error que no se previó al probar la carga la rechaza» «un aviso con NaN»"
+    },
+    {
+      "id": "L104",
+      "leccion": "Que Python convierta un valor no quiere decir que tenga su tipo. La prueba «tipos declarados (FAILFAST)» de la ingesta usaba float() e int() y recortaba la fecha a 10 caracteres: NaN, inf, 1e999, 1_000, « 5e2 », cifras de otro alfabeto, «2024-03-01xyz» y «15/04/2024 basura» aprobaban con ✓ en tipos, y NaN además pasaba los rangos (NaN no es menor ni mayor que nada); el CSV escrito los conservaba tal cual para las etapas siguientes. Ahora el tipo se mira en el texto completo, tal como viene y solo con cifras ASCII: un entero son cifras con signo; un decimal, además, con punto y exponente, y finito; una fecha, aaaa-mm-dd o dd/mm/aaaa que exista, con hora opcional (hh:mm, segundos, fracción y zona) y nada más. Un valor no finito cuenta fuera de rango. Con los datos reales de SECOP (49.662 y 91.072 filas) las pruebas salen idénticas a las de antes. Una columna con otro formato va como texto y la convierte el limpiador, que lo declara y lo marca.",
+      "origen": "verificación de la ingesta de la versión final, 7-nov-2026: un CSV con NaN, 1_000, « 5e2 » y fechas con basura al final se aprobaba con ✓ en tipos y en rangos",
+      "prueba": "B33 · herramientas/ingesta.py --autoprueba «NaN en un decimal» «1_000 en un entero» «una fecha con basura al final (2024-03-01xyz)» «NaN con un rango declarado no pasa por dentro del rango»"
+    },
+    {
+      "id": "L105",
+      "leccion": "La garantía de la ingesta valía solo para el CSV local. Lo que escribe tiene que leerlo el lector estricto de las reglas (reglas_base.leer_csv), porque las reglas leen el crudo con él, pero en Socrata y en el modo de agregados nada lo comprobaba: una entidad «=== OBRA CIVIL ===» se aprobaba y la carga caía tarde, en las reglas, con la fórmula de Excel como texto. Ahora lo que llega de Socrata o de un agregado pasa por el mismo lector antes de escribirse y la carga se rechaza con su línea. Como en Socrata ese lector es el primero que ve los valores, el ejemplo de su mensaje (el monto con punto de miles) sale enmascarado si la columna es privada por su nombre o por su descripción en los metadatos: con leer_csv a secas salía tal cual.",
+      "origen": "verificación de la ingesta de la versión final, 7-nov-2026: con un Socrata ficticio, una fila con la entidad «=== OBRA CIVIL ===» aprobaba la ingesta y leer_csv la rechazaba en la etapa siguiente",
+      "prueba": "B33 · herramientas/ingesta.py --autoprueba «Socrata: una fórmula de Excel como texto» «agregado: un grupo con una fórmula de Excel como texto rechaza la carga» «en una columna personal por su descripción (campo_7) sin mostrar el valor»"
+    },
+    {
+      "id": "L106",
+      "leccion": "En el modo de agregados, lo que decide cómo se compara un valor es el tipo de la columna en la fuente, no su aspecto. min y max se conciliaban como números si los valores parecían números: con una columna de texto con cifras, Socrata ordena como texto y el max sin agrupar es «9», mientras que el de los grupos, leído como número, era 10, y una carga correcta se rechazaba; el Socrata de mentira de la autoprueba ordenaba igual que la ingesta y no lo veía. Ahora min y max van por el dataTypeName de la columna (número: el extremo de los grupos es el del servidor; texto, fecha u otro: el del servidor es el de uno de los grupos) y el Socrata de mentira ordena por el tipo declarado. Un total NaN del servidor daba decimal.InvalidOperation: NaN e infinito ya no son números para la conciliación, y un conteo o una suma que no es un número finito rechaza la carga. Y el alias de cada pieza del select se separaba con una regex que tardaba el cuadrado del largo con una racha de espacios (100.000 espacios, 23 s): ahora se parte en el último « as » con rsplit, que es lineal.",
+      "origen": "verificación de la ingesta de la versión final, 7-nov-2026: max(codigo) con los grupos «9» y «10» y el control «9» se rechazaba; un total «NaN» daba un traceback; _CON_ALIAS tardaba 0,49 s con 8.000 espacios",
+      "prueba": "herramientas/ingesta.py --autoprueba «agregado: max de una columna de texto con cifras» «agregado: un total NaN del servidor rechaza la carga» «agregado con 100.000 espacios y sin alias»"
+    },
+    {
+      "id": "L107",
+      "leccion": "Dos lectores que dicen detener lo mismo tienen que partir el archivo igual. leer_csv lee el texto con StringIO, que solo parte líneas en «\\n», y recorrer_csv abría el archivo con newline=\"\", que también parte en un \\r suelto: un CSV con fin de línea \\r solo (el de Excel para Mac) lo detenía uno, con un mensaje engañoso («¿una comilla sin cerrar?»), y lo leía el otro, y un \\r suelto en un campo sin comillas partía la fila en dos en silencio con recorrer_csv. Además, «²³⁴⁵» cumple str.isdigit() y no \\d, así que la regla del punto de miles detenía con uno y no con el otro la misma columna. Ahora los dos parten las líneas solo en «\\n» (el \\r\\n y el \\r entre comillas se leen igual que antes), un \\r suelto fuera de comillas detiene con su línea y un mensaje propio (guardarlo como «CSV UTF-8»), un campo de más de 128 KB lo dice con la línea donde se abre en vez de sugerir una comilla, y los dos miran los enteros con \\d. Un fuzz de 30.000 CSV con \\r, comillas y cifras de otros alfabetos da 0 diferencias entre los dos lectores (71 con el código anterior), y los 27 CSV del repositorio se leen igual que antes.",
+      "origen": "verificación de la versión final, 7-nov-2026: con 'a,b\\r1,2\\r3,4\\r', leer_csv daba «¿una comilla sin cerrar?» y recorrer_csv dos filas; con '1.250.000' y '²³⁴⁵' en una columna, uno la leía y el otro la detenía",
+      "prueba": "B33 · bateria:failfast/fin_de_linea_solo_cr.csv · bateria:failfast/se_leen/cifras_superindice_en_codigos.csv · bateria:failfast/se_leen/fin_de_linea_crlf_y_retorno_entre_comillas.csv"
+    },
+    {
+      "id": "L108",
+      "leccion": "Declarar el decimal no basta: hay que mirar que el valor tenga la forma de un número con ese decimal. La operación numero con decimal «,» quitaba todos los puntos y cambiaba la coma por punto sin mirar nada: 12.5 salía 125, 1.5 salía 15 y 1,234.5 salía 1.2345, con la limpieza aprobada y sin marcas, aunque el plan pusiera marcadas_maximo en 0. La rama del punto tenía su revisión (el punto de miles mezclado, L46) y la de la coma no tenía la simétrica. Ahora con «,» cada punto agrupa exactamente tres cifras (1.234,5 · 12.500.000 · 0,75) y lo demás se marca numero_invalido, como con «.»; con los dos decimales solo valen cifras ASCII, porque float() también acepta 1_000, «٣» e Infinity; y un decimal que no es «.» ni «,» detiene la limpieza. La validez se mide con la misma forma. La capa limpia de la corrida completa sale idéntica, byte a byte.",
+      "origen": "verificación de la limpieza de la versión final, 7-nov-2026: con decimal «,», «1.234,5», 12.5, «1,234.5», 1.5 y «0,75» daban 1234.5, 125, 1.2345, 15 y 0.75, aprobada y sin marcas",
+      "prueba": "herramientas/limpieza.py --autoprueba «12.5, 1,234.5 y 1.5 se marcan» «Infinity y NaN se marcan aunque float() los acepte» «op numero con un decimal que no es»"
+    },
+    {
+      "id": "L109",
+      "leccion": "Lo que un subagente dice de sí mismo no es una compuerta. La limpieza escribía la capa limpia antes de mirar los umbrales y nada sin IA leía el estado de limpieza_<tabla>.json: flujo.js pasaba a la etapa siguiente con el «ok» del limpiador, verificar.py solo lo usaba para el caso conocido y el informe final, con una limpieza rechazada, decía «todas las etapas aprobadas». Peor: un umbral de otro tipo («\"0\"» en vacios_maximo) daba un TypeError al final, con la capa limpia ya reescrita con los datos nuevos y el informe «aprobada» de la limpieza anterior; y una salida igual a la entrada reescribía el crudo. Ahora la capa limpia se escribe solo si la limpieza se aprueba (en un temporal que la reemplaza), una rechazada o detenida retira la de la limpieza anterior y deja su informe en «rechazada», con su motivo y sin traceback (como la ingesta, GOB-7); el tipo de cada umbral se revisa antes de leer las filas; la salida es un .csv que no es la entrada ni el plan y la tabla, un nombre simple; y verificar.py y el informe final exigen, por cada tabla con plan de limpieza, el informe aprobado y la huella de la capa limpia que leen las implementaciones.",
+      "origen": "verificación de la limpieza de la versión final, 7-nov-2026: con limpieza_contratos.json en «rechazada», informe_final.py decía «todas las etapas aprobadas»; un plan con vacios_maximo {\"valor\": \"0\"} daba un TypeError, reescribía limpio.csv con las filas vacías y dejaba limpieza_t.json en «aprobada, filas 2»",
+      "prueba": "B39 · herramientas/mutar_controles.py --solo M25,M26,M27 · herramientas/limpieza.py --autoprueba «rechazada por un umbral: no escribe la capa limpia» «un error que no se previó (una regex mal escrita) también rechaza» «umbral de otro tipo» «la salida no puede ser la entrada»"
+    },
+    {
+      "id": "L110",
+      "leccion": "Un umbral se compara con lo que se contó, no con lo que se muestra. La limpieza redondeaba la completitud y la validez a 6 decimales para el informe y comparaba ese número redondeado con el umbral: con 3.000.000 de filas y 2.969.999 llenas (98,99997 %), la completitud salía 0,99 y pasaba un umbral de 0,99 que pide 2.970.000, y la holgura que se informaba estaba corrida. Con 49.662 filas no se notaba, pero el error crece con el dato, justo donde los umbrales absolutos importan. Ahora se comparan los conteos enteros con el umbral tal como se escribió (0,99 es 99/100, no el float más cercano), la holgura sale de esos mismos conteos y la proporción se trunca solo para mostrarla, así que un umbral que no se cumple nunca se ve como 99,0000 %. Las pruebas de la corrida completa salen idénticas.",
+      "origen": "verificación de la limpieza de la versión final, 7-nov-2026: metricas con 3.000.000 de filas y 2.969.999 llenas daba completitud 0,99 y pasaba ≥ 0,99 con holgura 0",
+      "prueba": "herramientas/limpieza.py --autoprueba «2 de 3 llenas no cumple 0,6666667» «2 de 3 fechas válidas no cumple 0,6666667» «2.969.999 llenas no cumplen 0,99»"
+    },
+    {
+      "id": "L111",
+      "leccion": "Un filtro que no señala ninguna fila no es un cero. En la presentación, un «donde» con el nombre mal escrito (DISTRITO DE MEDELLIN en lugar del nombre completo de la entidad) dejaba la suma y el conteo en 0, y la presentación aprobaba con «0,0 billones» y «0 registros»; el máximo, el mínimo y el valor sí fallaban. Además, el filtro comparaba por el texto: 2025 no era igual a 2025.0, así que un número escrito sin decimales no encontraba su fila. Ahora un «donde» sin filas hace fallar la cifra, cualquiera que sea la operación, y un número se compara con un número como número; un número con un texto se sigue comparando por el texto, y una celda vacía o booleana no coincide con nada. Un conteo que de verdad es 0 no se publica con «donde».",
+      "origen": "verificación de las salidas de la versión final, 7-nov-2026: en una copia de la corrida completa, alcaldia = {op: suma, donde: {entidad: DISTRITO DE MEDELLIN}} y su conteo salían en 0 y verificar_presentacion.py daba «aprobado»",
+      "prueba": "herramientas/verificar_presentacion.py --autoprueba «mal escrito (daba 0)» «que compara un número con el texto de una celda decimal» «numérico sobre una columna decimal»"
+    },
+    {
+      "id": "L112",
+      "leccion": "Un conteo se lee como entero, no se convierte a la fuerza. La conciliación (PIP-3) leía filas_leidas, usadas y excluidas con int(): 1520,9 se truncaba a 1520 y pasaba el ancla contra las filas reales, «1520» en texto y True contaban como números, y un infinito tumbaba verificar.py con OverflowError (también un entero de 400 cifras, al escribir el mensaje con fmt). Ahora una sola función, entero_estricto, acepta un int que no es bool o un float finito sin parte decimal (1520.0); lo demás es un motivo de conciliación inválida, en revisar_conciliacion, anclar_conciliacion, forma_conciliacion, describir_conciliacion y robustez.py, y fmt escribe los enteros sin pasar por float.",
+      "origen": "verificación de las salidas de la versión final, 7-nov-2026: en una copia de la corrida de ventas, conciliar() con filas_leidas infinito daba OverflowError en revisar_conciliacion, y con filas_leidas = usadas = 1520,9 conciliacion_problemas quedaba vacío",
+      "prueba": "B25 · herramientas/blindaje.py «decimal (2,9 = 2,9 + 0)» «infinito (inf = inf + 0)» «entero de 400 cifras» · herramientas/verificar.py «def entero_estricto»"
+    },
+    {
+      "id": "L113",
+      "leccion": "Lo que una herramienta dejó en disco no prueba que cumplió: hay que medirlo donde se usa. Cuando el whitepaper validado no cabe en tres hojas carta ni con letra de 8,5 pt, whitepaper_corrida.py lo imprime completo, dice que hay que acortarlo y sale con 1, pero deja WHITEPAPER.html y WHITEPAPER.pdf. El informe final solo miraba que la huella del texto validado estuviera en el HTML: enlazaba ese PDF de 4 hojas como «En tres hojas carta» y daba «todas las etapas aprobadas», contra la regla de las tres hojas. Ahora el informe final mide el PDF con carta.py (hojas, tamaño y enlaces): lo enlaza como «tres hojas carta» solo si lo es; con más hojas, otro tamaño o enlaces no lo enlaza, dice por qué y el análisis no queda aprobado; con una o dos hojas dice cuántas; y un PDF de otro texto o un enlace simbólico no se mide ni se enlaza.",
+      "origen": "verificación de las salidas de la versión final, 7-nov-2026: con carta.paginas simulado en 4, whitepaper_corrida.py salió con 1 y dejó el PDF, y informe_final.py dio todas_aprobadas true con «- En tres hojas carta, para imprimir: [WHITEPAPER.pdf](WHITEPAPER.pdf)»",
+      "prueba": "herramientas/whitepaper_corrida.py --autoprueba «un PDF de 4 hojas no se enlaza como» «tres hojas A4 no son carta» «un PDF con enlaces no se enlaza» · herramientas/informe_final.py «def version_impresa»"
+    },
+    {
+      "id": "L114",
+      "leccion": "Un barrido que elige qué leer por la extensión deja pasar todo lo demás. El filtro de aportes buscaba datos personales solo en .py, .md, .json, .csv, .txt, .js, .yml y .html, y órdenes a los agentes en menos aún, leídos con errors=\"ignore\"; los PDF y las imágenes salían antes del barrido. Un .md en UTF-16 (un NUL entre cada letra), un .rst, un .tsv, un .svg, un archivo sin extensión, un correo con entidades HTML, un PDF con un correo, una cédula y un enlace file://, y un JSON de 99 filas con forma de SECOP dentro de datos/ daban «✓ pasa». Ahora cada archivo se lee por su contenido (leer_contenido): todo texto tiene que ser UTF-8; de un JSON se leen también sus cadenas decodificadas, de una página o un SVG el texto con las entidades resueltas y sin etiquetas, de un PDF el texto de sus páginas con el mapa a Unicode de cada fuente, sus metadatos y sus enlaces, y de un PNG o un JPEG sus metadatos. Lo que no sabe leer (un PDF cifrado, con adjuntos, código o fuentes sin mapa; un GIF, un WebP o un ICO; bytes de más al final) y una ruta nueva del equipo de alguien quedan para el dueño; de datos/ y limpio/ solo entra la procedencia de cada tabla, y 20 ids de SECOP fuera de un caso conocido ya son un extracto. Límite: lo que una imagen o un PDF traen dibujado sin texto no se lee.",
+      "origen": "revisión de privacidad y del filtro de la versión final, 7-nov-2026: en un clon desechable, de 12 archivos sembrados el filtro atrapaba 5; con los otros 7 (un PDF, un WHITEPAPER.html con entidades, un .tsv, un .svg, un .rst, un CSV con un nombre sin tratamiento y un spec.json con la ruta de un equipo) y con un JSON de 99 filas en corridas/…/datos/ salía «✓ pasa» con código 0; un .md en UTF-16 con correo, cédula y celular, y una orden en UTF-16, en un .markdown o en un comentario HTML, también",
+      "prueba": "B40 · M28 · M29 · M30 · M31 · M32 · herramientas/validar_aporte.py --autoprueba «contenido_sin_barrer» «contenido_legible»"
+    },
+    {
+      "id": "L115",
+      "leccion": "Una defensa que vive en un solo camino no cubre los demás. Las fórmulas de hoja de cálculo se neutralizan en la capa limpia (B03) y la batería FAILFAST detiene la carga de un CSV con una fórmula en ejemplo/datos, pero el filtro de aportes no las buscaba: un CSV con «=HYPERLINK(…)» y una carga DDE «@SUM(…)*cmd|…» entraba en verde en baterias/ y en el caso conocido de una corrida, donde el dueño y el pipeline lo abren. Ahora, en toda tabla delimitada, .csv o .tsv del aporte, una celda que empieza con = + - @, un tabulador o un retorno y no es un número («-5», «+1,5») es falla; en baterias/failfast/ son casos a propósito.",
+      "origen": "revisión del filtro de la versión final, 7-nov-2026: baterias/cruces/proveedores_extra.csv con =HYPERLINK y una carga DDE, y un proveedores.csv con fórmulas en el caso conocido de una corrida nueva, daban «✓ pasa el filtro automático» con código 0; la misma fórmula en ejemplo/datos/ sí salía en rojo, por la batería FAILFAST",
+      "prueba": "B40 · M33 · herramientas/validar_aporte.py --autoprueba «formulas_en_tablas» «contenido_legible»"
+    },
+    {
+      "id": "L116",
+      "leccion": "Un dato se esconde de una expresión regular sin esconderse de una persona. El barrido de datos personales leía el texto tal cual: un correo con la arroba de ancho completo (U+FF20) aprobaba gobernanza.py y W5 de validar_whitepaper.py; uno con un espacio de ancho cero aprobaba gobernanza.py, y uno partido por una etiqueta en WHITEPAPER.html también. Ahora el barrido lee la forma canónica del texto (forma_canonica: NFKC, que vuelve «＠» y las cifras de ancho completo a su forma común, y sin los caracteres de formato, como el espacio de ancho cero, la unión invisible o el guion suave), en gobernanza.py, W5, las fichas, el whitepaper de las fichas y el filtro de aportes; y de una página, además de resolver las entidades, lee el texto sin etiquetas. Límites: un nombre sin tratamiento, una cédula sin contexto, un celular de 10 cifras pegado, un correo escrito con palabras («arroba») o una letra invisible que no es de formato (U+3164) siguen sin una forma que las expresiones reconozcan.",
+      "origen": "revisión de privacidad de la versión final, 7-nov-2026: en una copia de la corrida completa, «Contacto: <correo con U+FF20>» antes de «## Límites» dejaba gobernanza.py en «aprobado» y validar_whitepaper.py en 5 de 5; con un espacio de ancho cero, gobernanza.py aprobaba (W5 lo atrapaba como invisible), y un correo o un celular partidos por una etiqueta en WHITEPAPER.html también aprobaban",
+      "prueba": "B27 · M34 · M35 · bateria:privacidad/evasiones.json «correo con la arroba de ancho completo» · herramientas/validar_whitepaper.py --autoprueba «dato personal con la arroba de ancho completo»"
+    },
+    {
+      "id": "L117",
+      "leccion": "Una frase se esconde de una lista sin esconderse de quien la lee. W3 buscaba la lista D15 en el texto crudo: «Esto *demuestra* que…», «Se **recomienda**…» y «Por lo *tanto*…» aprobaban el whitepaper, y su versión impresa los mostraba sin asteriscos; una «o» cirílica (U+043E) en «Se concluye que…» aprobaba el whitepaper y la presentación, y el whitepaper tampoco leía las letras de ancho completo. Ahora buscar_d15 (validar_whitepaper.py) busca la lista en el texto tal cual y en como lo lee una persona (forma canónica, letras de otro alfabeto que se leen como latinas vueltas latinas y sin las marcas de Markdown), y la usan W3, la presentación, el gráfico (con un caso nuevo en su batería), las fichas y el resumen del agente masivo; W5 y la presentación rechazan las palabras que mezclan letras latinas con letras de otro alfabeto que se leen como latinas; el maquetado del whitepaper busca la lista en el texto que imprime; y parece_instruccion (gobernanza.py) busca las órdenes también en esa forma, así una orden con la «o» cirílica o con letras de ancho completo no pasa el perfil, el filtro ni las salidas. Límites: una letra de otro alfabeto que no está en la tabla (las confusiones de Unicode son miles) o una palabra entera de otro alfabeto que no se parece a una latina pasan, y las ve una persona.",
+      "origen": "verificación de D15 de la versión final, 7-nov-2026: en copias de la corrida completa, «Esto *demuestra* que el gasto está concentrado», «Se **recomienda** auditar…» y «Por lo *tanto*…» aprobaban validar_whitepaper.py, y «Se concluye que…» con la «o» cirílica aprobaba el whitepaper y la presentación",
+      "prueba": "herramientas/validar_whitepaper.py --autoprueba «for frase in FRASES_D15» «título de conclusiones con una letra de otro alfabeto» · herramientas/verificar_presentacion.py --autoprueba «palabra con una letra de otro alfabeto en una nota» · herramientas/whitepaper_corrida.py --autoprueba «frase D15 con énfasis de Markdown» · bateria:grafico/malos/titulo-con-letra-de-otro-alfabeto.json · bateria:inyeccion/maliciosos.txt · B27 · M36"
+    },
+    {
+      "id": "L118",
+      "leccion": "Lo que una ficha le prohíbe a la IA tiene que estar en la lista que lo comprueba. La ficha 12 prohibía «preocupante» con nombre propio y ninguna lista lo buscaba: «La concentración del valor en pocas entidades es preocupante» aprobaba el whitepaper y la presentación, igual que «Es alarmante que…». La lista D15 suma «preocupante», «alarmante», «excesivo» y «desproporcionado», y la autoprueba del whitepaper lee las listas de ejemplos prohibidos de las fichas 09, 12 y 13 y del encargo de las fichas y exige que cada uno esté en la lista; así salió también que el encargo nombraba «muestra que», que la lista no busca sin sujeto, y se cambió por «esto muestra que». «Grave» e «inflado» no se buscan: también nombran un dato o el método («faltas graves», «contarlas dos veces habría inflado el total»). Sigue siendo una lista: un juicio con otras palabras pasa, y lo revisa una persona.",
+      "origen": "verificación de D15 de la versión final, 7-nov-2026: con cada frase que nombran las fichas, todas se atrapaban salvo «preocupante»; en copias de la corrida completa, «…es preocupante» en el whitepaper y en la situación de la presentación aprobaban",
+      "prueba": "herramientas/validar_whitepaper.py --autoprueba «frases prohibidas que nombran» «La concentración de las ventas en el Norte es preocupante.» · herramientas/verificar_presentacion.py --autoprueba «D15 en una nota» · herramientas/validar_ficha.py --autoprueba «D15 en por_que_importa» · agentes/12-presentador.md «preocupante» · plantillas/encargo_fichas.md «esto muestra que»"
+    },
+    {
+      "id": "L119",
+      "leccion": "Una cifra que el verificador no reconoce como cifra no se comprueba. W2 buscaba números con la forma del formato colombiano y quitaba el destino de los enlaces antes de buscar: «12 000 000 000 pesos» se partía en 12, 000 y 000, y el pozo de la corrida completa respalda más de 60 de los enteros entre 0 y 999, así que casi cualquier número partido en grupos de tres pasaba; «treinta billones» o «noventa y siete por ciento» escritos con palabras, «30k» o «2,5M» pegados a letras y «10⁶» no se leían; y «[la tabla](total-real-30.000.000.000.000-pesos)» aprobaba aunque el maquetado imprime el destino al lado del texto. Ahora una cifra agrupada con espacios (también el de no separación o el fino), pegada a letras, con caracteres numéricos que no son los dígitos del 0 al 9 o escrita con palabras es una cifra no válida; los cardinales sueltos hasta quince («dos implementaciones») y las unidades solas («en millones de pesos») cuentan el método y pasan; y el destino de un enlace se lee como la prosa, salvo el nombre de un archivo que existe junto al whitepaper o en el repositorio. Límites: los números de una dirección web no se comprueban, y un cardinal hasta quince escrito con palabras tampoco (el pozo respalda casi todos los enteros pequeños): los revisa una persona.",
+      "origen": "verificación de correctitud de la versión final, 7-nov-2026: en una copia de la corrida completa, «Las entidades nacionales firmaron 12 000 000 000 pesos.», «…25 000 000 000 000 pesos en 7 000 contratos.», «Noventa y siete por ciento del valor quedó en quince entidades, con treinta billones de pesos.» y «Detalle en [la tabla](total-real-30.000.000.000.000-pesos).» en «Cifra verificada» dejaban validar_whitepaper.py en «aprobado»",
+      "prueba": "herramientas/validar_whitepaper.py --autoprueba «cifra agrupada con espacios» «cifra con palabras» «porcentaje con palabras» «cifra en el destino de un enlace» «enlace a un archivo que existe» «cifra pegada a letras» «carácter numérico que no es un dígito del 0 al 9» · herramientas/validar_whitepaper.py «def numeros_con_palabras»"
+    },
+    {
+      "id": "L120",
+      "leccion": "Una carpeta de trabajo que se arma copiando la corrida hereda lo que la corrida trae. La plantilla de las personas decía que trabajaran sobre una copia de la carpeta de la corrida, y la corrida completa trae las hipótesis que la IA proponía y probaba antes del 6-nov y su sello: la persona leía las hipótesis de la IA antes de escribir la suya (D15) y, como el sello ya estaba, su hipótesis propia no se podía sellar. La ruta sugerida, analisis/<su-nombre>/, tampoco estaba en .gitignore: un cp -R dejaba datos/ y limpio/ de SECOP listos para subirse. Ahora verificar_hipotesis.py --preparar arma la carpeta con solo el spec.json de la corrida y la plantilla (ni hipótesis de la IA, ni sello, ni datos: la consulta lee el dato crudo de la corrida), no escribe en una carpeta con algo ni dentro de la corrida, y en analisis/ git no sube datos/, limpio/ ni ningún CSV. Límite: las hipótesis de la IA siguen en las corridas viejas como historial; la plantilla pide no abrirlas antes de escribir la propia, y eso no lo comprueba ninguna herramienta.",
+      "origen": "verificación de D15 y de coherencia de la versión final, 7-nov-2026: en una copia de la corrida completa con un hipotesis.json propio, verificar_hipotesis.py --sellar respondía «Las hipótesis ya estaban selladas y cambiaron», y git check-ignore analisis/ana/datos/contratos.csv salía con 1",
+      "prueba": "herramientas/verificar_hipotesis.py --autoprueba «control positivo: en una copia entera de la corrida» «--preparar no trae las hipótesis de la IA» «en la carpeta preparada, la hipótesis propia se sella» «git no sube» · plantillas/analisis_humano.md «--preparar corridas/<fecha-nombre> analisis/<su-nombre>»"
+    },
+    {
+      "id": "L121",
+      "leccion": "Una auditoría que no conoce un rol no lo audita, y no lo dice. DB9 prometía que ningún agente había abierto lo que su ficha le prohíbe, pero auditar_independencia.py reconocía 9 roles: el lector, el especificador, el limpiador, el revisor de la especificación y el graficador no se contaban ni como agentes auditados, aunque sus fichas dicen qué no pueden leer (filas, implementaciones, reglas, caso conocido, datos crudos). Con 5 transcripciones ficticias de lecturas prohibidas, la auditoría auditaba 1 agente y marcaba 1 uso. Ahora entran los cinco con lo que prohíbe su ficha, el lector y el custodio no pueden leer filas (abrir una tabla, mostrarla con un comando o pedirle filas a Socrata; el encabezado solo, contar, escribir un archivo o filtrar una tubería no cuentan), la ficha 09 dice que el graficador tampoco lee la capa limpia, y la autoprueba exige que cada «Eres el …» de flujo.js y cada ficha con «No puede leer» tengan su rol. Sobre 3 corridas orquestadas del 6-nov, la tabla de antes marcaba 1 uso en 17 agentes y la de hoy 13 en 32: el limpiador abrió reglas.py o el caso conocido y pasó su plan por él, y el graficador miró la capa limpia. Límites: no ve lo que lee un programa que el agente corre, ni una lectura prohibida encadenada con una herramienta del pipeline.",
+      "origen": "verificación de coherencia de la versión final, 7-nov-2026: con transcripciones ficticias (limpiador lee reglas.py, revisor lee impl_a.py, graficador lee datos/contratos.csv, especificador lee impl_b.py, generador A lee reglas.py), auditar_independencia.py daba «Agentes con rol auditado: 1 · usos prohibidos: 1»",
+      "prueba": "evidencia/blindaje/auditar_independencia.py --autoprueba «control positivo (L121)» «def sin_auditar» «lo que permiten sus fichas no se marca» · agentes/09-graficador.md «Los datos crudos ni la capa limpia»"
+    },
+    {
+      "id": "L122",
+      "leccion": "Una regla que dice «todos» tiene que llegar a todos. La regla común 9 y la ficha 12 decían que todos los subagentes leen baterias/lecciones.json antes de escribir, pero flujo.js solo se las pasaba a 7 de 11 instrucciones (por las reglas comunes o por la ruta de las lecciones): el custodio, el documentador, el presentador y el revisor ciego de seguridad no las recibían, y el control blando de las lecciones no existía para ellos. Ahora las cuatro las traen, las fichas 10, 11 y 13 las nombran, y la batería de lecciones lee flujo.js: cada instrucción que empieza con «Eres el» trae ${LECCIONES} o ${reglasComunes}, que las trae, y LECCIONES apunta a baterias/lecciones.json; con tres formas de perderlas (sin las reglas comunes, sin la ruta, las reglas comunes sin la ruta) la comprobación las echa de menos, y con el flujo.js anterior faltan las 4.",
+      "origen": "verificación de coherencia de la versión final, 7-nov-2026: sed -n 224,256p flujo.js | grep -c -E 'reglasComunes|LECCIONES' daba 0 en las instrucciones del documentador y del presentador, y tampoco las traían el custodio ni el revisor ciego de seguridad",
+      "prueba": "herramientas/baterias.py «def sin_lecciones» «control positivo: con {nombre} sin las lecciones» · agentes/00-reglas-comunes.md «la batería de lecciones lo comprueba (L122)»"
+    },
+    {
+      "id": "L123",
+      "leccion": "--id",
+      "origen": "verificación de un clon ajeno de la versión final, 7-nov-2026: en un clon de la rama sin los datos ignorados, verificar.py sobre una copia de la corrida completa dejaba en informe.json un resultado_oficial de 53 filas y filas_reales {contratos: 49662}, gobernanza.json nombraba la capa limpia de la carpeta del dueño y, con la ruta sellada de otra máquina, la autoprueba de verificar.py salía con «apunta a … que no existe»",
+      "prueba": "herramientas/rutas.py --autoprueba «def _en_un_clon_sin_el_dato» «control positivo: con resolver() de antes, el clon leía el dato de la otra carpeta» «corre sin el dato real: solo lee el caso conocido» «se detiene sin traceback y nombra el archivo que falta en este clon» · herramientas/validar_whitepaper.py --autoprueba «W2 no toma la procedencia de otra carpeta» · herramientas/verificar_hipotesis.py --autoprueba «la prueba dice qué archivo falta y no corre la consulta»"
+    },
+    {
+      "id": "L124",
+      "leccion": "--id",
+      "origen": "verificación de un clon ajeno de la versión final, 7-nov-2026: flujo.js:22 decía const RAIZ = A.raiz || <la ruta del clon del dueño>, y los subagentes recibían esa carpeta como herramientas y python si el participante omitía raiz",
+      "prueba": "herramientas/rutas.py --autoprueba «def raiz_de_flujo» «control positivo: con la línea de antes, la revisión del texto la echa de menos» «sin raiz, se detiene con» · flujo.js «Falta raiz: la ruta de tu clon»"
+    },
+    {
+      "id": "L125",
+      "leccion": "--id",
+      "origen": "verificación de un clon ajeno de la versión final, 7-nov-2026: con el Python 3.15 del instalador de python.org, urllib.request.urlopen a datos.gov.co daba CERTIFICATE_VERIFY_FAILED, y con SSL_CERT_FILE vacío la ingesta tardaba 9,8 s en 3 intentos y salía con «sin respuesta (URLError)»",
+      "prueba": "herramientas/ingesta.py --autoprueba «def sin_certificado» «el motivo en el rechazo» «def comprobar_certificado_en_otras» «red caída» · README.md «Install Certificates.command»"
     }
   ]
 }

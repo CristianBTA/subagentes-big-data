@@ -21,18 +21,26 @@ import csv
 import io
 import json
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))   # ingesta nombra un certificado que no se verifica (L125)
 AGENTE = {"User-Agent": "agente-solicitudes (dictamen de big data)"}
 FACTOR_PANDAS = 5          # mínimo de la referencia de pandas (5 a 10 veces el tamaño)
 FILAS_EXCEL = 1_048_576
 
 
 def pedir(url):
-    with urllib.request.urlopen(urllib.request.Request(url, headers=AGENTE), timeout=180) as r:  # nosec B310
-        return r.read().decode("utf-8")
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=AGENTE), timeout=180) as r:  # nosec B310
+            return r.read().decode("utf-8")
+    except (urllib.error.URLError, OSError) as e:
+        from ingesta import CertificadoNoVerificado, certificado_no_verificado
+        if certificado_no_verificado(e):   # dice qué hacer en vez de un traceback de SSL (L125)
+            raise CertificadoNoVerificado() from None
+        raise
 
 
 def memoria_muestra(texto_csv):
@@ -113,7 +121,12 @@ def main(argv):
         raise SystemExit(__doc__)
     g = lambda k, d=None: argv[argv.index(k) + 1] if k in argv else d
     ram = float(g("--ram-gb", "12.7"))
-    m = medir_socrata(argv[1], argv[2], g("--filtro")) if argv[0] == "socrata" else medir_archivo(argv[1])
+    from ingesta import CertificadoNoVerificado
+    try:
+        m = medir_socrata(argv[1], argv[2], g("--filtro")) if argv[0] == "socrata" else medir_archivo(argv[1])
+    except CertificadoNoVerificado as e:
+        print(f"✗ no se pudo medir: {e}")
+        return 2
     d = dictaminar(m, ram)
     if g("--salida"):
         Path(g("--salida")).write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding="utf-8")
